@@ -1,0 +1,1498 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>POS Profesional - Responsive + Factura PDF</title>
+  <meta name="description" content="POS demo responsive, historial, factura PDF" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f8ead8;
+      --surface:#fff;
+      --accent:#2d1e37;
+      --accent-2:#ed222f;
+      --muted:#6b7b8f;
+      --shadow: 0 8px 24px rgba(45,30,55,0.08);
+      --radius:12px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#f8ead8 0%,var(--bg) 60%);}    
+    .wrap{max-width:1200px;margin:20px auto;padding:18px}
+    .card{background:var(--surface);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+    h1{margin:0 0 8px;font-size:20px;color:var(--accent)}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input,select,button,textarea{font-family:inherit}
+    form .row{display:flex;gap:12px;margin-bottom:10px}
+    input,select{padding:10px;border-radius:10px;border:1px solid #e6f1ff;background:#fdfefe;width:100%;}
+    input:focus{outline:3px solid rgba(45,30,55,0.08)}
+    .btn{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600;transition:all 0.2s ease}
+    .btn:hover{background:var(--accent-2);transform:translateY(-1px)}
+    .btn.ghost{background:transparent;border:1px solid #e6f1ff;color:var(--muted)}
+    .btn.ghost:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .btn.secondary{background:var(--surface);color:var(--accent);border:2px solid var(--accent)}
+    .btn.secondary:hover{background:var(--accent);color:#fff}
+    .top-info{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+    .top-info .user small{display:block;color:var(--muted)}
+    .main{display:grid;grid-template-columns:15% 55% 30%;gap:18px;margin-top:14px;align-items:start}
+    .panel{background:var(--surface);padding:12px;border-radius:12px;box-shadow:var(--shadow);min-height:420px}
+    .panel h3{margin:0 0 8px;color:var(--accent)}
+    .categories{display:flex;flex-direction:column;gap:10px}
+    .cat-btn{padding:10px;border-radius:10px;border:none;background:linear-gradient(180deg,#f8f5f0,#fff);cursor:pointer;text-align:left;font-weight:600;color:var(--accent);box-shadow:0 2px 6px rgba(45,30,55,0.04);transition:all 0.2s ease}
+    .cat-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(45,30,55,0.1)}
+    .cat-btn.active{background:linear-gradient(90deg,var(--accent-2),var(--accent));color:#fff}
+    .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+    .prod-btn{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:10px;border:1px solid #f0e6d8;background:#fff;cursor:pointer;transition:all 0.2s ease}
+    .prod-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(45,30,55,0.1);border-color:var(--accent-2)}
+    .prod-btn .name{font-weight:700;color:var(--accent)}
+    .prod-btn .price{font-weight:600;color:var(--accent-2)}
+    .cart-list{display:flex;flex-direction:column;gap:10px;max-height:56vh;overflow:auto;padding-right:6px}
+    .cart-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;border:1px solid #f0e6d8;background:linear-gradient(180deg,#fff,#fbf7f0);transition:all 0.2s ease}
+    .cart-item:hover{border-color:var(--accent-2)}
+    .cart-item .meta{flex:1;margin-left:10px}
+    .qty-controls{display:flex;gap:8px;align-items:center}
+    .small{font-size:13px;color:var(--muted)}
+    .right-footer{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+    .totals{display:flex;justify-content:space-between;align-items:center}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(180deg,var(--accent-2),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;padding:16px}
+    .modal{background:var(--surface);padding:18px;border-radius:12px;max-width:520px;width:100%;box-shadow:0 12px 36px rgba(0,0,0,0.25)}
+    .history-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .history-list{display:flex;flex-direction:column;gap:12px}
+    .history-card{border-radius:10px;padding:12px;border:1px solid #f0e6d8;background:linear-gradient(180deg,#fff,#fbf7f0);display:flex;flex-direction:column;transition:all 0.2s ease}
+    .history-card:hover{border-color:var(--accent-2);transform:translateY(-1px)}
+    @media (max-width:900px){.main{grid-template-columns:1fr;} .panel{min-height:unset} .cart-list{max-height:30vh}}
+    
+    /* Nuevos estilos para subcategorías */
+    .subcategory-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0e6d8;
+    }
+    .back-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.2s ease;
+    }
+    .back-btn:hover {
+      background: var(--accent-2);
+      transform: scale(1.05);
+    }
+    .size-badge {
+      background: var(--accent-2);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    
+    /* Mejoras visuales adicionales */
+    .cart-item .meta div:first-child {
+      color: var(--accent);
+    }
+    .history-card strong {
+      color: var(--accent);
+    }
+    .modal h3 {
+      color: var(--accent);
+    }
+    input:focus, select:focus {
+      border-color: var(--accent-2);
+      outline-color: rgba(237, 34, 47, 0.1);
+    }
+    
+    /* Estilos para subcategorías anidadas */
+    .combo-category-btn {
+      background: linear-gradient(180deg, #fff, #f8f5f0);
+      border: 2px solid var(--accent);
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .combo-category-btn:hover {
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: white;
+      transform: translateY(-2px);
+    }
+    .combo-category-btn .name {
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .combo-category-btn:hover .name {
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="initial-card" class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h1>Registro inicial</h1>
+          <div class="small">Ingresa datos para iniciar el pedido</div>
+        </div>
+        <div class="brand">
+          <div class="logo">POS</div>
+        </div>
+      </div>
+
+      <form id="initialForm" style="margin-top:12px">
+        <div class="row">
+          <div style="flex:1">
+            <label for="phone">Teléfono</label>
+            <input id="phone" name="phone" placeholder="Ej: 3001234567" autocomplete="tel" />
+          </div>
+          <div style="flex:2">
+            <label for="name">Nombre</label>
+            <input id="name" name="name" placeholder="Nombre del cliente" autocomplete="name" />
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex:1">
+            <label for="city">Ciudad</label>
+            <input id="city" name="city" placeholder="Ciudad" />
+          </div>
+          <div style="flex:2">
+            <label for="address">Dirección</label>
+            <input id="address" name="address" placeholder="Dirección de entrega" />
+          </div>
+          <div style="flex:1">
+            <label for="pos">Punto de Venta</label>
+            <input id="pos" name="pos" placeholder="Punto de venta" />
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+          <button type="submit" class="btn">Continuar</button>
+          <button type="button" id="open-history" class="btn ghost">Historial</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="app" style="display:none">
+      <div class="top-info card" style="margin-top:14px;display:flex;justify-content:space-between;align-items:center">
+        <div class="user">
+          <div style="font-weight:700;color:var(--accent)" id="hdrName"></div>
+          <small id="hdrPhone" class="small"></small>
+          <small id="hdrCity" class="small"></small>
+          <small id="hdrAddress" class="small"></small>
+          <small id="hdrPos" class="small"></small>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="btnReset" class="btn ghost">Cerrar sesión</button>
+          <button id="btnOpenHistory2" class="btn secondary">Ver historial</button>
+        </div>
+      </div>
+
+      <div class="main">
+        <div class="panel">
+          <h3>Categorías</h3>
+          <div id="categories" class="categories"></div>
+        </div>
+
+        <div class="panel">
+          <div id="categoryHeader">
+            <h3 id="categoryTitle">Platos</h3>
+          </div>
+          <div id="products" class="products"></div>
+        </div>
+
+        <div class="panel" style="display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <h3>Pedido</h3>
+            <div id="cartList" class="cart-list"></div>
+          </div>
+
+          <div class="right-footer">
+            <div class="totals">
+              <div class="small">Subtotal</div>
+              <div id="cartSubtotal" style="font-weight:700;color:var(--accent)">$0.00</div>
+            </div>
+            
+            <!-- Campo de descuento -->
+            <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+              <div class="small" style="flex:1">Descuento</div>
+              <div style="display:flex;gap:4px;align-items:center">
+                <input id="discountValue" type="number" min="0" placeholder="0" style="width:70px;padding:6px;border-radius:6px;border:1px solid #f0e6d8" />
+                <select id="discountType" style="padding:6px;border-radius:6px;border:1px solid #f0e6d8">
+                  <option value="fixed">$</option>
+                  <option value="percent">%</option>
+                </select>
+                <button id="applyDiscount" class="btn ghost" style="padding:6px 8px">Aplicar</button>
+              </div>
+            </div>
+            <div class="totals">
+              <div class="small">Descuento aplicado</div>
+              <div id="cartDiscount" style="font-weight:700;color:var(--accent-2)">$0.00</div>
+            </div>
+            
+            <div class="totals">
+              <div class="small">Impuesto (8%)</div>
+              <div id="cartTax" style="font-weight:700;color:var(--accent)">$0.00</div>
+            </div>
+            
+            <!-- Campo de propina mejorado (valor o porcentaje) -->
+            <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+              <div class="small" style="flex:1">Propina</div>
+              <div style="display:flex;gap:4px;align-items:center">
+                <input id="tipValue" type="number" min="0" placeholder="0" style="width:70px;padding:6px;border-radius:6px;border:1px solid #f0e6d8" />
+                <select id="tipType" style="padding:6px;border-radius:6px;border:1px solid #f0e6d8">
+                  <option value="fixed">$</option>
+                  <option value="percent">%</option>
+                </select>
+                <button id="applyTip" class="btn ghost" style="padding:6px 8px">Aplicar</button>
+              </div>
+            </div>
+            <div class="totals">
+              <div class="small">Propina</div>
+              <div id="cartTip" style="font-weight:700;color:var(--accent-2)">$0.00</div>
+            </div>
+            
+            <div class="totals" style="font-size:18px">
+              <div style="color:var(--accent);font-weight:600">Total a pagar</div>
+              <div id="cartTotal" style="font-weight:800;color:var(--accent-2)">$0.00</div>
+            </div>
+            <div style="display:flex;gap:10px">
+              <select id="payMethod" style="flex:1;padding:10px;border-radius:8px;border:1px solid #f0e6d8;background:#fff">
+                <option value="efectivo">Efectivo</option>
+                <option value="transferencia">Transferencia</option>
+              </select>
+              <button id="btnTotalizar" class="btn" style="flex:1">Totalizar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="historyView" style="display:none;margin-top:14px">
+        <div class="card">
+          <h3>Historial de pedidos</h3>
+          <div class="history-controls" style="margin-top:10px">
+            <input id="filterPhone" placeholder="Filtrar por teléfono" style="padding:8px;border-radius:8px;border:1px solid #f0e6d8" />
+            <button id="btnApplyFilters" class="btn ghost">Aplicar</button>
+            <button id="btnClearFilters" class="btn ghost">Limpiar</button>
+            <div style="flex:1"></div>
+            <button id="btnExportCSV" class="btn ghost">Exportar CSV</button>
+            <button id="btnClearHistory" class="btn" style="background:var(--accent-2)">Eliminar historial</button>
+          </div>
+          <div id="historyList" class="history-list" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal -->
+    <div id="modalBackdrop" class="modal-backdrop">
+      <div class="modal">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h3>Resumen del pedido</h3>
+          <button id="closeModal" class="btn ghost">Cerrar</button>
+        </div>
+        <div id="modalItems" style="max-height:260px;overflow:auto;margin-top:10px"></div>
+        <div style="margin-top:12px">
+          <div class="totals"><div>Subtotal</div><div id="modalSubtotal" style="color:var(--accent)">$0.00</div></div>
+          <div class="totals"><div>Descuento</div><div id="modalDiscount" style="color:var(--accent-2)">$0.00</div></div>
+          <div class="totals"><div>Impuesto (8%)</div><div id="modalTax" style="color:var(--accent)">$0.00</div></div>
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+            <label class="small">Propina</label>
+            <input id="modalTip" type="number" min="0" value="0" style="padding:8px;border-radius:8px;border:1px solid #f0e6d8;width:100px" />
+            <select id="modalTipType" style="padding:8px;border-radius:8px;border:1px solid #f0e6d8">
+              <option value="fixed">$</option>
+              <option value="percent">%</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center"><label class="small">Método de pago</label><select id="modalPayMethod" style="padding:8px;border-radius:8px;border:1px solid #f0e6d8"><option value="efectivo">Efectivo</option><option value="transferencia">Transferencia</option></select></div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button id="btnModalFinalize" class="btn">Finalizar y Facturar (PDF)</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- jsPDF CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+/* ===========================
+      POS + HISTORIAL V3
+   =========================== */
+
+const productsData = {
+  "Bebidas": [
+    {id:'b1',name:'Agua con Gas',price:8000},
+    {id:'b2',name:'Agua sin Gas',price:9000},
+    {id:'b3',name:'Coca Cola Original',price:8500},
+    {id:'b4',name:'Coca Cola Zero',price:8500},
+    {id:'b5',name:'Soda 300ml',price:8500},
+    {id:'b6',name:'Hatsu Amarillo',price:11500},
+    {id:'b7',name:'Hatsu Azul',price:11500},
+    {id:'b8',name:'Hatsu Blanco',price:11500},
+    {id:'b9',name:'Hatsu Morado',price:11500},
+    {id:'b10',name:'Hatsu Negro',price:11500},
+    {id:'b11',name:'Hatsu Rojo',price:11500},
+    {id:'b12',name:'Hatsu Rosado',price:11500},
+    {id:'b13',name:'Hatsu Verde',price:11500},
+    {id:'b14',name:'Limonada Natural',price:9500},
+    {id:'b15',name:'Limonada Cerezada',price:12500},
+    {id:'b16',name:'Limonada de Coco',price:13500},
+    {id:'b17',name:'Jugo de Fresa',price:11000},
+    {id:'b18',name:'Jugo Frutos Rojos',price:11000},
+    {id:'b19',name:'Jugo de Mango',price:11000},
+    {id:'b20',name:'Jugo de Mandarina',price:11000},
+    {id:'b21',name:'Jugo de Maracuya',price:11000}
+  ],
+  "Bowls":[
+    {id:'e1',name:'Bowl Dinamita',price:39500},
+    {id:'e2',name:'Poke Osaki',price:44500},
+    {id:'e3',name:'Poke Veggie',price:31000},
+    {id:'e4',name:'Wakame Especial',price:30000}
+  ],
+  "Ceviches":[
+    {id:'c1',name:'Ceviche Limeño',price:36500},
+    {id:'c2',name:'Ceviche Pacifico',price:27500},
+    {id:'c3',name:'Ceviche Sunshine',price:39000},
+    {id:'c4',name:'Coctel Rosarito',price:27500}
+  ],
+  "Entradas":[
+    {id:'bo1',name:'Asian Crunch',price:32500},
+    {id:'bo2',name:'Calamar Crunchy',price:22500},
+    {id:'bo3',name:'Camarones Dragon',price:22500},
+    {id:'bo4',name:'Coco Ebi',price:22500},
+    {id:'bo5',name:'Coco Roll',price:25900},
+    {id:'bo6',name:'Croqueta de Camaron',price:22900},
+    {id:'bo7',name:'Croquetas de Cangrejo',price:21500},
+    {id:'bo8',name:'Edamame Trufado',price:27500},
+    {id:'bo9',name:'Gyosas Caramelizadas',price:22900},
+    {id:'bo10',name:'Kani Especial',price:26900},
+    {id:'bo11',name:'Sensaciòn',price:27500},
+    {id:'bo12',name:'Spicy Edamame',price:24500},
+    {id:'bo13',name:'tataki de atun Especial',price:39900},
+    {id:'bo14',name:'Tiradito de Palmito',price:35000}
+  ],
+  "Combos": [
+    {
+      id:'combo1',
+      name:'Combo Yuki',
+      price:55000,
+      subcategory: true,
+      size: 'Completo',
+      subcategories: [
+        {
+          name: 'Bebidas',
+          products: [
+            {id:'b3',name:'Coca Cola Original',price:0},
+            {id:'b4',name:'Coca Cola Zero',price:0},
+            {id:'b14',name:'Limonada Natural',price:0},
+            {id:'b15',name:'Limonada Cerezada',price:0}
+          ]
+        },
+        {
+          name: 'Entradas', 
+          products: [
+            {id:'bo1',name:'Asian Crunch',price:0},
+            {id:'bo2',name:'Calamar Crunchy',price:0},
+            {id:'bo3',name:'Camarones Dragon',price:0},
+            {id:'bo4',name:'Coco Ebi',price:0}
+          ]
+        },
+        {
+          name: 'Rolls Especiales',
+          products: [
+            {id:'res-x6-1',name:'Aburi x6',price:0},
+            {id:'res-x6-2',name:'California x6',price:0},
+            {id:'res-x6-3',name:'Cholo x6',price:0},
+            {id:'res-x6-4',name:'Citrus x6',price:0}
+          ]
+        }
+      ]
+    },
+    {
+      id:'combo2',
+      name:'Combo Kik',
+      price:65000,
+      subcategory: true,
+      size: 'Completo',
+      subcategories: [
+        {
+          name: 'Bebidas',
+          products: [
+            {id:'b6',name:'Hatsu Amarillo',price:3000},
+            {id:'b7',name:'Hatsu Azul',price:0},
+            {id:'b8',name:'Hatsu Blanco',price:0},
+            {id:'b17',name:'Jugo de Fresa',price:0}
+          ]
+        },
+        {
+          name: 'Entradas',
+          products: [
+            {id:'bo5',name:'Coco Roll',price:0},
+            {id:'bo6',name:'Croqueta de Camaron',price:0},
+            {id:'bo7',name:'Croquetas de Cangrejo',price:0},
+            {id:'bo8',name:'Edamame Trufado',price:0}
+          ]
+        },
+        {
+          name: 'Rolls Recomendados',
+          products: [
+            {id:'rec-x6-1',name:'Akira X6',price:0},
+            {id:'rec-x6-2',name:'Emperador x6',price:0},
+            {id:'rec-x6-3',name:'Explotion x6',price:0},
+            {id:'rec-x6-4',name:'Gori Gori x6',price:0}
+          ]
+        }
+      ]
+    }
+  ],
+  "Kaos y Baos":[
+    {id:'k1',name:'Bao de Camaron',price:30500},
+    {id:'k2',name:'Bao de Cerdo',price:34500},
+    {id:'k3',name:'Bao de Pollo',price:26500},
+    {id:'k4',name:'Bao Veggie',price:31900},
+    {id:'k5',name:'Kaos Acevichados X2',price:34000},
+    {id:'k6',name:'Kaos Acevichados X3',price:46000},
+    {id:'k7',name:'Kaos de Atun X2',price:30000},
+    {id:'k8',name:'Kaos de Atun X3',price:46000},
+    {id:'k9',name:'Kaos de Nori X2',price:28500},
+    {id:'k10',name:'Kaos de Nori X3',price:31500},
+    {id:'k11',name:'Kaos de Panceta X2',price:27500},
+    {id:'k12',name:'Kaos de Panceta X3',price:37500},
+    {id:'k13',name:'Kaos de Pollo X2',price:29500},
+    {id:'k14',name:'Kaos de Pollo X3',price:38500},
+    {id:'k15',name:'Kaos de Salmon X2',price:30000},
+    {id:'k16',name:'Kaos de Salmon X3',price:39500},
+    {id:'k17',name:'Kaos de Tilapia X2',price:30900},
+    {id:'k18',name:'Kaos de Tilapia X3',price:41500}
+  ],
+  "Fusiones":[
+    {id:'f1',name:'Arroz Cantones',price:41200},
+    {id:'f2',name:'Arroz Mandarin',price:40200},
+    {id:'f3',name:'Arroz Marinero',price:52000},
+    {id:'f4',name:'Pad Thai de Camaron',price:41200},
+    {id:'f5',name:'Pad Thai Mar y Tierra',price:40200},
+    {id:'f6',name:'Pad Thai de Pollo',price:39000}
+  ],
+  "Sodas Saborizadas y Cervezas":[
+    {id:'l1',name:'Soda de Maracuya',price:14900},
+    {id:'l2',name:'Soda de Lyche',price:16900},
+    {id:'l3',name:'Soda de Tamarindo',price:14900},
+    {id:'l4',name:'Sosa Pepino Sandia',price:14900},
+    {id:'l5',name:'Club Colombia Dorada',price:11900},
+    {id:'l6',name:'Club Colombia Negra',price:11900},
+    {id:'l7',name:'Club Colombia Roja',price:11900},
+    {id:'l8',name:'Corona',price:16500},
+    {id:'l9',name:'Cusqueña',price:15000},
+    {id:'l10',name:'Stella Artois',price:16900}
+  ],
+  "Rolls Especiales": [
+    {
+      id:'res-x6',
+      name:'Rolls Especiales x6',
+      price:0,
+      subcategory: true,
+      size: 'x6',
+      subproducts: [
+        {id:'res-x6-1',name:'Aburi x6',price:21900},
+        {id:'res-x6-2',name:'California x6',price:17500},
+        {id:'res-x6-3',name:'Cholo x6',price:23900},
+        {id:'res-x6-4',name:'Citrus x6',price:19500},
+        {id:'res-x6-5',name:'Cuzco x6',price:25500},
+        {id:'res-x6-6',name:'Fujishowa x6',price:25900},
+        {id:'res-x6-7',name:'Ojo de Tigre x6',price:25900},
+        {id:'res-x6-8',name:'Premium x6',price:25900},
+        {id:'res-x6-9',name:'Roll del Cheff x6',price:25900},
+        {id:'res-x6-10',name:'Sake  x6',price:23000},
+        {id:'res-x6-11',name:'Salmon Skin x6',price:22500},
+        {id:'res-x6-12',name:'Tofu x6',price:18000},
+        {id:'res-x6-13',name:'Veggie x6',price:13000},
+        {id:'res-x6-14',name:'Veggie x6',price:19900}
+      ]
+    },
+    {
+      id:'res-x12',
+      name:'Rolls Especiales x12',
+      price:0,
+      subcategory: true,
+      size: 'x12',
+      subproducts: [
+        {id:'res-x12-1',name:'Aburi x12',price:40500},
+        {id:'res-x12-2',name:'California x12',price:39000},
+        {id:'res-x12-3',name:'Cholo x12',price:44000},
+        {id:'res-x12-4',name:'Citrus x12',price:35500},
+        {id:'res-x12-5',name:'Cuzco x12',price:47000},
+        {id:'res-x12-6',name:'Fujishowa x12',price:47500},
+        {id:'res-x12-7',name:'Ojo de Tigre x12',price:47500},
+        {id:'res-x12-8',name:'Premium x12',price:47500},
+        {id:'res-x12-9',name:'Roll del Cheff x12',price:47000},
+        {id:'res-x12-10',name:'Sake  x12',price:42500},
+        {id:'res-x12-11',name:'Salmon Skin x12',price:41500},
+        {id:'res-x12-12',name:'Tofu x12',price:32500},
+        {id:'res-x12-13',name:'Veggie x12',price:24000},
+        {id:'res-x12-14',name:'Ebi x12',price:36500}
+      ]
+    }
+  ],
+  "Roll Recomendados": [
+    {
+      id:'rec-x6',
+      name:'Rolls Recomendados x6',
+      price:0,
+      subcategory: true,
+      size: 'x6',
+      subproducts: [
+        {id:'rec-x6-1',name:'Akira X6',price:28500},
+        {id:'rec-x6-2',name:'Emperador x6',price:25500},
+        {id:'rec-x6-3',name:'Explotion x6',price:28500},
+        {id:'rec-x6-4',name:'Gori Gori x6',price:28500},
+        {id:'rec-x6-5',name:'Itako x6',price:25500},
+        {id:'rec-x6-6',name:'Master x6',price:25500},
+        {id:'rec-x6-7',name:'Meraki x6',price:25500},
+        {id:'rec-x6-8',name:'Roll Acevichado x6',price:25500},
+        {id:'rec-x6-9',name:'Samurai x6',price:25500},
+        {id:'rec-x6-10',name:'SM tempurizado x6',price:28000},
+        {id:'rec-x6-11',name:'Tropical x6',price:28000},
+        {id:'rec-x6-12',name:'Volcan x6',price:28000}
+      ]
+    },
+    {
+      id:'rec-x12',
+      name:'Rolls Recomendados x12',
+      price:0,
+      subcategory: true,
+      size: 'x12',
+      subproducts: [
+        {id:'rec-x12-1',name:'Akira X12',price:52500},
+        {id:'rec-x12-2',name:'Emperador x12',price:46000},
+        {id:'rec-x12-3',name:'Explotion x12',price:52500},
+        {id:'rec-x12-4',name:'Gori Gori x12',price:52000},
+        {id:'rec-x12-5',name:'Itako x12',price:46500},
+        {id:'rec-x12-6',name:'Master x12',price:46500},
+        {id:'rec-x12-7',name:'Meraki x12',price:46500},
+        {id:'rec-x12-8',name:'Roll Acevichado x12',price:46500},
+        {id:'rec-x12-9',name:'Samurai x12',price:46500},
+        {id:'rec-x12-10',name:'SM tempurizado x12',price:51000},
+        {id:'rec-x12-11',name:'Tropical x12',price:51000},
+        {id:'rec-x12-12',name:'Volcan x12',price:51000}
+      ]
+    }
+  ],
+  "Niguiris y Sashimis":[
+    {id:'n1',name:'Sashimi Atùn',price:51500},
+    {id:'n2',name:'Sashimi Mixto',price:43000},
+    {id:'n3',name:'Sashimi Salmon',price:39500},
+    {id:'n4',name:'Niguiri de Anguila',price:27500},
+    {id:'n5',name:'Niguiri de Langostino',price:21900},
+    {id:'n6',name:'Niguiri Maguro',price:21900},
+    {id:'n7',name:'Niguiri Peruano',price:24500},
+    {id:'n8',name:'Niguiri de Salmon',price:21900},
+    {id:'n9',name:'Mix de Niguiris',price:71500}
+  ],
+  "Vinos":[
+    {id:'v1',name:'Copa de Sangria',price:29500},
+    {id:'v2',name:'Copa Tinto Verano',price:28500},
+    {id:'v3',name:'Jarra Sangria',price:108000},
+    {id:'v4',name:'Copa Vino Caliente',price:28500},
+    {id:'v5',name:'Blanco de Verano',price:28500},
+    {id:'v6',name:'Mojito',price:28500},
+    {id:'v7',name:'Aperol',price:28500},
+    {id:'v8',name:'Gin Tonic',price:28500},
+    {id:'v9',name:'Piba Trapiche Malbec',price:32000},
+    {id:'v10',name:'Piba Sutter Home Rose',price:32000},
+    {id:'v11',name:'Piba Santa Carolina Reservado',price:32000},
+    {id:'v12',name:'Bot Moras Syrah Rose',price:97000},
+    {id:'v13',name:'Bot Ramon Bilbao',price:119000},
+    {id:'v14',name:'Bot Coussinno Macul Blanco',price:119000},
+    {id:'v15',name:'Piba Santa Carolina Reservado',price:31000}
+  ]
+};
+
+const state = { 
+  user:null, 
+  activeCategory:Object.keys(productsData)[0], 
+  cart:[], 
+  history:[],
+  discount: { value: 0, type: 'fixed' },
+  tip: { value: 0, type: 'fixed' },
+  currentSubcategory: null,
+  currentCombo: null,
+  currentComboCategory: null
+};
+const STORAGE_KEY = 'pos_history_v2';
+
+// DOM refs
+const initialCard = document.getElementById('initial-card');
+const initialForm = document.getElementById('initialForm');
+const app = document.getElementById('app');
+const categoriesEl = document.getElementById('categories');
+const productsEl = document.getElementById('products');
+const cartList = document.getElementById('cartList');
+const categoryTitle = document.getElementById('categoryTitle');
+const categoryHeader = document.getElementById('categoryHeader');
+const hdrName = document.getElementById('hdrName');
+const hdrPhone = document.getElementById('hdrPhone');
+const hdrCity = document.getElementById('hdrCity');
+const hdrAddress = document.getElementById('hdrAddress');
+const hdrPos = document.getElementById('hdrPos');
+const btnReset = document.getElementById('btnReset');
+const historyView = document.getElementById('historyView');
+const historyList = document.getElementById('historyList');
+
+// Nuevos elementos para descuentos y propinas
+const discountValueEl = document.getElementById('discountValue');
+const discountTypeEl = document.getElementById('discountType');
+const applyDiscountBtn = document.getElementById('applyDiscount');
+const tipValueEl = document.getElementById('tipValue');
+const tipTypeEl = document.getElementById('tipType');
+const applyTipBtn = document.getElementById('applyTip');
+
+const modalBackdrop = document.getElementById('modalBackdrop');
+const modalItems = document.getElementById('modalItems');
+const modalSubtotalEl = document.getElementById('modalSubtotal');
+const modalDiscountEl = document.getElementById('modalDiscount');
+const modalTaxEl = document.getElementById('modalTax');
+const modalTipEl = document.getElementById('modalTip');
+const modalTipTypeEl = document.getElementById('modalTipType');
+const modalPayMethodEl = document.getElementById('modalPayMethod');
+const btnModalFinalize = document.getElementById('btnModalFinalize');
+const closeModalBtn = document.getElementById('closeModal');
+
+function money(n){ return '$'+Number(n).toLocaleString('es-CO',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+// Función mejorada para buscar productos
+function findProductById(id){
+  for(const category in productsData){
+    const products = productsData[category];
+    for(const product of products){
+      if(product.id === id) return product;
+      
+      if(product.subproducts){
+        const subproduct = product.subproducts.find(sp => sp.id === id);
+        if(subproduct) return subproduct;
+      }
+      
+      if(product.subcategories){
+        for(const subcat of product.subcategories){
+          const subproduct = subcat.products.find(sp => sp.id === id);
+          if(subproduct) return subproduct;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  try{
+    loadHistory();
+    renderCategories();
+    renderProducts();
+    renderCart();
+    attachListeners();
+  }catch(e){ console.error(e); }
+});
+
+/* ================================
+      LOCAL STORAGE (HISTORIAL)
+   ================================ */
+
+function loadHistory(){
+  try{
+    state.history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') || [];
+  }catch(e){ console.error('Error parseando historial',e); state.history = []; }
+}
+
+function saveHistory(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state.history));
+}
+
+/* =====================================
+            MOSTRAR HISTORIAL
+   ===================================== */
+
+function renderHistory(filterList){
+  loadHistory();
+
+  const list = Array.isArray(filterList) ? filterList : (state.history || []);
+  const div = historyList;
+  div.innerHTML = '';
+
+  if(!Array.isArray(list) || list.length === 0){
+    div.innerHTML = '<div class="small">No hay pedidos aún</div>';
+    return;
+  }
+
+  list.slice().reverse().forEach(o => {
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'history-card';
+    itemDiv.style.cursor = 'pointer';
+    itemDiv.dataset.orderId = o.id;
+
+    itemDiv.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <strong>${o.id}</strong>
+          <div class="small">${new Date(o.createdAt).toLocaleString()}</div>
+        </div>
+        <div style="text-align:right">
+          <strong style="color:var(--accent-2)">${money(o.total)}</strong>
+          <div class="small">${o.payMethod}</div>
+        </div>
+      </div>
+
+      <div style="margin-top:8px">
+        <strong>Cliente:</strong> ${o.user?.name || 'N/D'}
+      </div>
+
+      <div style="margin-top:6px" class="small">
+        ${o.user?.phone || 'N/D'} · ${o.user?.city || 'N/D'}
+      </div>
+
+      <div style="margin-top:6px" class="small">
+        ${o.user?.address || 'N/D'} · Punto de venta: ${o.user?.pos || 'N/D'}
+      </div>
+
+      <div style="margin-top:8px">
+        <strong>Items:</strong>
+        <div class="small" style="margin-top:6px;color:var(--muted)">${o.items.map(it=> `${it.name} x ${it.qty} — ${money(it.price * it.qty)}`).join('<br>')}</div>
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+        <button class="btn ghost btn-reprint-inline" data-orderid="${o.id}">Reimprimir</button>
+      </div>
+    `;
+
+    itemDiv.addEventListener('click', (ev)=>{
+      const target = ev.target;
+      if(target && target.classList && target.classList.contains('btn-reprint-inline')) return;
+      showOrderDetailModal(o);
+    });
+
+    itemDiv.querySelectorAll('.btn-reprint-inline').forEach(b=>{
+      b.addEventListener('click', (ev)=>{
+        ev.stopPropagation();
+        const id = b.dataset.orderid;
+        const order = state.history.find(x=>x.id===id);
+        if(order) {
+          generateInvoicePDF(order).then(()=> alert('Factura reimpresa (descargada)'));
+        }
+      });
+    });
+
+    div.appendChild(itemDiv);
+  });
+}
+
+/* =========================================
+    FUNCIONES DE VISUALIZACIÓN / DETALLE
+   ========================================= */
+
+function showOrderDetailModal(order){
+  modalItems.innerHTML = '';
+
+  const header = document.createElement('div');
+  header.style.display = 'flex';
+  header.style.justifyContent = 'space-between';
+  header.style.marginBottom = '8px';
+  header.innerHTML = `<div style="font-weight:700;color:var(--accent)">${order.id}</div><div class="small">${new Date(order.createdAt).toLocaleString()}</div>`;
+  modalItems.appendChild(header);
+
+  const clienteDiv = document.createElement('div');
+  clienteDiv.className = 'small';
+  clienteDiv.style.marginBottom = '8px';
+  clienteDiv.innerHTML = `
+    <strong>Cliente:</strong> ${order.user?.name || 'N/D'}<br>
+    <span>${order.user?.phone || 'N/D'} · ${order.user?.city || 'N/D'}</span><br>
+    <span>${order.user?.address || 'N/D'} · Punto de venta: ${order.user?.pos || 'N/D'}</span>
+  `;
+  modalItems.appendChild(clienteDiv);
+
+  const itemsContainer = document.createElement('div');
+  itemsContainer.style.maxHeight = '220px';
+  itemsContainer.style.overflow = 'auto';
+  itemsContainer.style.borderTop = '1px solid #f0e6d8';
+  itemsContainer.style.paddingTop = '8px';
+
+  order.items.forEach(it=>{
+    const r = document.createElement('div');
+    r.style.display = 'flex';
+    r.style.justifyContent = 'space-between';
+    r.style.padding = '6px 0';
+    r.innerHTML = `<div style="flex:1"><strong style="color:var(--accent)">${it.name}</strong> <div class="small" style="color:var(--muted)">${money(it.price)} x ${it.qty}</div></div><div style="min-width:110px;text-align:right;color:var(--accent-2)">${money(it.price * it.qty)}</div>`;
+    itemsContainer.appendChild(r);
+  });
+
+  modalItems.appendChild(itemsContainer);
+
+  modalSubtotalEl.textContent = money(order.subtotal || order.items.reduce((s,i)=>s+i.price*i.qty,0));
+  modalDiscountEl.textContent = money(order.discount || 0);
+  modalTaxEl.textContent = money(order.tax || ( (order.subtotal || order.items.reduce((s,i)=>s+i.price*i.qty,0)) * 0.08 ));
+  modalTipEl.value = order.tip?.value || 0;
+  modalTipTypeEl.value = order.tip?.type || 'fixed';
+  modalPayMethodEl.value = order.payMethod || 'efectivo';
+
+  modalTipEl.disabled = true;
+  modalTipTypeEl.disabled = true;
+  modalPayMethodEl.disabled = true;
+
+  btnModalFinalize.style.display = 'none';
+
+  let existing = document.getElementById('btnModalReprint');
+  if(existing) existing.remove();
+
+  const reprintBtn = document.createElement('button');
+  reprintBtn.id = 'btnModalReprint';
+  reprintBtn.className = 'btn';
+  reprintBtn.textContent = 'Reimprimir factura (PDF)';
+  reprintBtn.style.marginLeft = '8px';
+  reprintBtn.addEventListener('click', async ()=>{
+    await generateInvoicePDF(order);
+    alert('Factura reimpresa y descargada.');
+  });
+
+  const modal = document.querySelector('#modalBackdrop .modal');
+  const footer = modal ? modal.querySelector('div[style*="justify-content:flex-end"]') : null;
+  if(footer){
+    footer.appendChild(reprintBtn);
+  }
+
+  modalBackdrop.style.display = 'flex';
+}
+
+closeModalBtn.addEventListener('click', ()=>{
+  hideDetailModalReset();
+});
+
+function hideDetailModalReset(){
+  modalBackdrop.style.display = 'none';
+  modalTipEl.disabled = false;
+  modalTipTypeEl.disabled = false;
+  modalPayMethodEl.disabled = false;
+  btnModalFinalize.style.display = '';
+  const existing = document.getElementById('btnModalReprint');
+  if(existing) existing.remove();
+  modalTipEl.value = 0;
+  modalTipTypeEl.value = 'fixed';
+  modalItems.innerHTML = '';
+}
+
+/* =========================================
+          BOTONES DE HISTORIAL (vinculación)
+   ========================================= */
+
+function openHistoryFromStart(){
+  initialCard.style.display = "none";
+  app.style.display = "block";
+  historyView.style.display = "block";
+  renderHistory();
+}
+
+document.getElementById("btnOpenHistory2").addEventListener("click", openHistoryFromStart);
+document.getElementById("open-history").addEventListener("click", openHistoryFromStart);
+document.getElementById("btnApplyFilters").addEventListener("click", ()=>{
+  const phone = document.getElementById('filterPhone').value.trim();
+  loadHistory();
+  let list = state.history.slice();
+  if(phone) list = list.filter(o=> o.user && o.user.phone && o.user.phone.includes(phone));
+  renderHistory(list);
+});
+document.getElementById("btnClearFilters").addEventListener("click", ()=>{ document.getElementById('filterPhone').value=''; renderHistory(); });
+document.getElementById("btnExportCSV").addEventListener("click", exportCSV);
+document.getElementById("btnClearHistory").addEventListener("click", clearHistory);
+
+/* ====================================
+        EXPORTAR CSV
+   ==================================== */
+
+function exportCSV(){
+  loadHistory();
+  if(!state.history || state.history.length === 0){ alert('No hay pedidos para exportar'); return; }
+  const rows = [['id','createdAt','cliente','telefono','ciudad','direccion','pos','items','subtotal','discount','tax','tip','total','metodo']];
+  state.history.forEach(o=>{
+    const items = o.items.map(i=>`${i.name} x ${i.qty}`).join(' | ');
+    rows.push([o.id,o.createdAt,o.user?.name || '',o.user?.phone || '', o.user?.city || '', o.user?.address || '', o.user?.pos || '',items,o.subtotal,o.discount,o.tax,o.tip,o.total,o.payMethod]);
+  });
+  const csv = rows.map(r=> r.map(c=> `"${String(c).replace(/"/g,'""')}"` ).join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'historial_pos.csv';
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+
+/* ====================================
+      LIMPIAR HISTORIAL
+   ==================================== */
+
+function clearHistory(){
+  if(!confirm('¿Eliminar TODO el historial?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state.history = [];
+  renderHistory();
+}
+
+/* ====================================
+      APP - listeners y flujo
+   ==================================== */
+
+function attachListeners(){
+  initialForm.addEventListener('submit', onInitialSubmit);
+  btnReset.addEventListener('click', resetToStart);
+  document.getElementById('btnTotalizar').addEventListener('click', showModalForFinalize);
+  document.getElementById('btnModalFinalize').addEventListener('click', finalizeAndInvoice);
+  
+  applyDiscountBtn.addEventListener('click', applyDiscount);
+  applyTipBtn.addEventListener('click', applyTip);
+}
+
+function onInitialSubmit(e){
+  e.preventDefault(); // Esto previene el comportamiento por defecto del formulario
+  
+  const phone = document.getElementById('phone').value.trim();
+  const name = document.getElementById('name').value.trim();
+  const city = document.getElementById('city').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const pos = document.getElementById('pos').value.trim();
+  
+  if(!phone||!name||!city||!address||!pos){ 
+    alert('Por favor completa todos los campos.'); 
+    return; 
+  }
+  
+  state.user = {phone,name,city,address,pos};
+  
+  hdrName.textContent = name;
+  hdrPhone.textContent = `Teléfono: ${phone}`;
+  hdrCity.textContent = `Ciudad: ${city}`;
+  hdrAddress.textContent = `Dirección: ${address}`;
+  hdrPos.textContent = `Punto de venta: ${pos}`;
+  
+  initialCard.style.display = 'none';
+  app.style.display = 'block';
+  historyView.style.display = 'none';
+  renderCart();
+}
+
+function resetToStart(){
+  state.user = null;
+  state.cart = [];
+  state.discount = { value: 0, type: 'fixed' };
+  state.tip = { value: 0, type: 'fixed' };
+  state.currentSubcategory = null;
+  state.currentCombo = null;
+  state.currentComboCategory = null;
+  renderCart();
+  initialCard.style.display = 'block';
+  app.style.display = 'none';
+  historyView.style.display = 'none';
+  initialForm.reset();
+  discountValueEl.value = '';
+  tipValueEl.value = '';
+  tipTypeEl.value = 'fixed';
+  if(hdrName) hdrName.textContent = '';
+  if(hdrPhone) hdrPhone.textContent = '';
+  if(hdrCity) hdrCity.textContent = '';
+  if(hdrAddress) hdrAddress.textContent = '';
+  if(hdrPos) hdrPos.textContent = '';
+}
+
+/* ===========================
+    CATEGORÍAS Y PRODUCTOS
+   =========================== */
+
+function renderCategories(){ 
+  categoriesEl.innerHTML=''; 
+  Object.keys(productsData).forEach(cat=>{ 
+    const b=document.createElement('button'); 
+    b.className='cat-btn'+(state.activeCategory===cat?' active':''); 
+    b.textContent=cat; 
+    b.onclick=()=>{ 
+      state.activeCategory=cat; 
+      state.currentSubcategory = null;
+      state.currentCombo = null;
+      state.currentComboCategory = null;
+      renderCategories(); 
+      renderProducts(); 
+    }; 
+    categoriesEl.appendChild(b); 
+  }); 
+}
+
+function renderProducts(){ 
+  productsEl.innerHTML=''; 
+  
+  if (state.currentComboCategory) {
+    // Mostrar productos de una categoría específica del combo
+    const combo = state.currentCombo;
+    const category = state.currentComboCategory;
+    
+    categoryHeader.innerHTML = `
+      <div class="subcategory-header">
+        <button class="back-btn" onclick="goBackToComboCategories()">←</button>
+        <div>
+          <h3 id="categoryTitle">${combo.name} - ${category.name}</h3>
+          <div class="small">Selecciona un producto (precio incluido en el combo)</div>
+        </div>
+      </div>
+    `;
+    
+    category.products.forEach(p=>{ 
+      const el=document.createElement('button'); 
+      el.className='prod-btn'; 
+      el.innerHTML=`
+        <div class="name">${p.name}</div>
+        <div class="price">Incluido</div>
+      `; 
+      el.onclick = ()=> addComboProduct(combo, p); 
+      productsEl.appendChild(el); 
+    });
+    
+  } else if (state.currentCombo) {
+    // Mostrar categorías del combo seleccionado
+    const combo = state.currentCombo;
+    
+    categoryHeader.innerHTML = `
+      <div class="subcategory-header">
+        <button class="back-btn" onclick="goBackToCategory()">←</button>
+        <div>
+          <h3 id="categoryTitle">${combo.name}</h3>
+          <div class="small">Selecciona las categorías para personalizar tu combo</div>
+        </div>
+      </div>
+    `;
+    
+    combo.subcategories.forEach(subcat=>{ 
+      const el=document.createElement('button'); 
+      el.className='combo-category-btn'; 
+      el.innerHTML=`
+        <div class="name">${subcat.name}</div>
+        <div class="small">Seleccionar ${subcat.name.toLowerCase()}</div>
+      `; 
+      el.onclick = ()=> showComboCategory(combo, subcat); 
+      productsEl.appendChild(el); 
+    });
+    
+  } else if (state.currentSubcategory) {
+    // Subcategorías normales (no combos)
+    const parentProduct = state.currentSubcategory.parent;
+    const subproducts = state.currentSubcategory.products;
+    
+    categoryHeader.innerHTML = `
+      <div class="subcategory-header">
+        <button class="back-btn" onclick="goBackToCategory()">←</button>
+        <div>
+          <h3 id="categoryTitle">${parentProduct.name}</h3>
+          <div class="small">Selecciona una variante</div>
+        </div>
+      </div>
+    `;
+    
+    subproducts.forEach(p=>{ 
+      const el=document.createElement('button'); 
+      el.className='prod-btn'; 
+      el.innerHTML=`
+        <div class="name">${p.name}</div>
+        <div class="price">${money(p.price)}</div>
+      `; 
+      el.onclick = ()=> addToCart(p.id); 
+      productsEl.appendChild(el); 
+    });
+  } else {
+    // Vista principal de categoría
+    categoryHeader.innerHTML = `<h3 id="categoryTitle">Platos — ${state.activeCategory}</h3>`;
+    const prods = productsData[state.activeCategory] || []; 
+    prods.forEach(p=>{ 
+      const el=document.createElement('button'); 
+      el.className='prod-btn'; 
+      
+      let badge = '';
+      if (p.size) {
+        badge = `<span class="size-badge">${p.size.toUpperCase()}</span>`;
+      }
+      
+      el.innerHTML=`
+        <div class="name">${p.name} ${badge}</div>
+        <div class="price">${p.subcategory || p.subcategories ? 'Personalizar' : money(p.price)}</div>
+      `; 
+      
+      if (p.subcategories) {
+        // Para combos con subcategorías anidadas
+        el.onclick = () => showCombo(p);
+      } else if (p.subcategory) {
+        // Para productos con subcategorías simples
+        el.onclick = () => showSubcategory(p);
+      } else {
+        // Para productos sin subcategorías
+        el.onclick = () => addToCart(p.id);
+      }
+      
+      productsEl.appendChild(el); 
+    }); 
+  }
+}
+
+function showCombo(combo) {
+  state.currentCombo = combo;
+  state.currentSubcategory = null;
+  state.currentComboCategory = null;
+  renderProducts();
+}
+
+function showComboCategory(combo, category) {
+  state.currentComboCategory = category;
+  renderProducts();
+}
+
+function showSubcategory(parentProduct) {
+  state.currentSubcategory = {
+    parent: parentProduct,
+    products: parentProduct.subproducts
+  };
+  state.currentCombo = null;
+  state.currentComboCategory = null;
+  renderProducts();
+}
+
+function goBackToCategory() {
+  state.currentSubcategory = null;
+  state.currentCombo = null;
+  state.currentComboCategory = null;
+  renderProducts();
+}
+
+function goBackToComboCategories() {
+  state.currentComboCategory = null;
+  renderProducts();
+}
+
+/* ===========================
+        CARRITO
+   =========================== */
+
+function addComboProduct(combo, product) {
+  // Primero agregar el combo principal con su precio
+  const existingCombo = state.cart.find(i=>i.id===combo.id);
+  if (!existingCombo) {
+    state.cart.push({
+      id: combo.id,
+      name: combo.name,
+      price: combo.price,
+      qty: 1
+    });
+  }
+  
+  // Luego agregar el producto del combo con precio 0
+  state.cart.push({
+    id: product.id,
+    name: `${product.name} (${combo.name})`,
+    price: 0,
+    qty: 1
+  });
+  
+  renderCart();
+  goBackToComboCategories();
+}
+
+function addToCart(id){ 
+  const p = findProductById(id);
+  
+  if(!p) {
+    console.error('Producto no encontrado:', id);
+    alert('Producto no encontrado. ID: ' + id);
+    return;
+  } 
+  
+  const existing = state.cart.find(i=>i.id===id); 
+  if(existing) {
+    existing.qty++; 
+  } else {
+    state.cart.push({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      qty: 1
+    }); 
+  }
+  
+  renderCart(); 
+}
+
+function changeQty(i,delta){ 
+  if(!state.cart[i]) return; 
+  state.cart[i].qty += delta; 
+  if(state.cart[i].qty <=0) state.cart.splice(i,1); 
+  renderCart(); 
+}
+
+function removeItem(i){ 
+  state.cart.splice(i,1); 
+  renderCart(); 
+}
+
+function calcTotals(){ 
+  const subtotal = state.cart.reduce((s,i)=>s + i.price*i.qty,0);
+  
+  let discountAmount = 0;
+  if (state.discount.value > 0) {
+    if (state.discount.type === 'percent') {
+      discountAmount = subtotal * (state.discount.value / 100);
+    } else {
+      discountAmount = state.discount.value;
+    }
+    discountAmount = Math.min(discountAmount, subtotal);
+  }
+  
+  const subtotalAfterDiscount = subtotal - discountAmount;
+  const tax = subtotalAfterDiscount * 0.08;
+  
+  let tipAmount = 0;
+  if (state.tip.value > 0) {
+    if (state.tip.type === 'percent') {
+      tipAmount = subtotalAfterDiscount * (state.tip.value / 100);
+    } else {
+      tipAmount = state.tip.value;
+    }
+  }
+  
+  const total = subtotalAfterDiscount + tax + tipAmount;
+  
+  return {
+    subtotal, 
+    discount: discountAmount,
+    tax, 
+    tip: tipAmount,
+    total
+  }; 
+}
+
+function renderCart(){ 
+  cartList.innerHTML=''; 
+  
+  if (state.cart.length === 0) {
+    cartList.innerHTML = '<div class="small" style="text-align:center;padding:20px;color:var(--muted)">El carrito está vacío</div>';
+  } else {
+    state.cart.forEach((it, idx)=>{ 
+      const div = document.createElement('div'); 
+      div.className='cart-item'; 
+      div.innerHTML = `
+        <div style="display:flex;align-items:center">
+          <div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(180deg,var(--accent-2),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">
+            ${it.name[0]}
+          </div>
+          <div class="meta" style="margin-left:12px">
+            <div style="font-weight:700">${it.name}</div>
+            <div class="small">${money(it.price)} x ${it.qty} = <strong style="color:var(--accent-2)">${money(it.price*it.qty)}</strong></div>
+          </div>
+        </div>
+        <div class="qty-controls">
+          <button class="btn ghost" onclick="changeQty(${idx}, -1)">-</button>
+          <div class="small" style="align-self:center">${it.qty}</div>
+          <button class="btn" onclick="changeQty(${idx}, 1)">+</button>
+          <button class="btn ghost" style="background:var(--accent-2);color:#fff;border:none;margin-left:8px" onclick="removeItem(${idx})">Eliminar</button>
+        </div>
+      `; 
+      cartList.appendChild(div); 
+    }); 
+  }
+  
+  updateTotals(); 
+}
+
+function updateTotals(){ 
+  const t = calcTotals(); 
+  document.getElementById('cartSubtotal').textContent = money(t.subtotal);
+  document.getElementById('cartDiscount').textContent = money(t.discount);
+  document.getElementById('cartTax').textContent = money(t.tax);
+  document.getElementById('cartTip').textContent = money(t.tip);
+  document.getElementById('cartTotal').textContent = money(t.total); 
+}
+
+/* ===========================
+     NUEVAS FUNCIONES: DESCUENTOS Y PROPINAS
+   =========================== */
+
+function applyDiscount() {
+  const value = parseFloat(discountValueEl.value) || 0;
+  const type = discountTypeEl.value;
+  
+  if (value < 0) {
+    alert('El valor del descuento no puede ser negativo');
+    return;
+  }
+  
+  if (type === 'percent' && value > 100) {
+    alert('El porcentaje de descuento no puede ser mayor a 100%');
+    return;
+  }
+  
+  state.discount = { value, type };
+  renderCart();
+}
+
+function applyTip() {
+  const value = parseFloat(tipValueEl.value) || 0;
+  const type = tipTypeEl.value;
+  
+  if (value < 0) {
+    alert('La propina no puede ser negativa');
+    return;
+  }
+  
+  if (type === 'percent' && value > 100) {
+    alert('El porcentaje de propina no puede ser mayor a 100%');
+    return;
+  }
+  
+  state.tip = { value, type };
+  renderCart();
+}
+
+/* ===========================
+     MODAL + FINALIZAR (USO NORMAL)
+   =========================== */
+
+function showModalForFinalize(){
+  if(state.cart.length===0){ alert('Carrito vacío'); return; }
+  modalItems.innerHTML = '';
+  state.cart.forEach(it=>{
+    const r = document.createElement('div');
+    r.style.display='flex'; r.style.justifyContent='space-between'; r.style.padding='6px 0';
+    r.innerHTML = `<div style="color:var(--accent)">${it.name} x ${it.qty}</div><div style="color:var(--accent-2)">${money(it.price*it.qty)}</div>`;
+    modalItems.appendChild(r);
+  });
+  const t = calcTotals();
+  modalSubtotalEl.textContent = money(t.subtotal);
+  modalDiscountEl.textContent = money(t.discount);
+  modalTaxEl.textContent = money(t.tax);
+  modalTipEl.value = state.tip.value;
+  modalTipTypeEl.value = state.tip.type;
+  modalPayMethodEl.value = document.getElementById('payMethod').value || 'efectivo';
+
+  modalTipEl.disabled = false;
+  modalTipTypeEl.disabled = false;
+  modalPayMethodEl.disabled = false;
+  btnModalFinalize.style.display = '';
+  const rp = document.getElementById('btnModalReprint'); if(rp) rp.remove();
+
+  modalBackdrop.style.display = 'flex';
+}
+
+async function finalizeAndInvoice(){
+  if(!state.user){ alert('No hay cliente registrado'); return; }
+  const tipValue = Number(modalTipEl.value) || 0;
+  const tipType = modalTipTypeEl.value;
+  state.tip = { value: tipValue, type: tipType };
+  const payMethod = modalPayMethodEl.value;
+  const t = calcTotals();
+  const orderItems = JSON.parse(JSON.stringify(state.cart));
+  const order = {
+    id: 'PED-' + Date.now(),
+    createdAt: new Date().toISOString(),
+    user: state.user,
+    items: orderItems,
+    subtotal: t.subtotal,
+    discount: t.discount,
+    tax: t.tax,
+    tip: state.tip,
+    total: t.total,
+    payMethod
+  };
+  state.history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  state.history.push(order);
+  saveHistory();
+
+  await generateInvoicePDF(order);
+
+  state.cart = [];
+  state.discount = { value: 0, type: 'fixed' };
+  state.tip = { value: 0, type: 'fixed' };
+  state.currentSubcategory = null;
+  state.currentCombo = null;
+  state.currentComboCategory = null;
+  renderCart();
+  hideDetailModalReset();
+  initialCard.style.display = 'block';
+  app.style.display = 'none';
+  initialForm.reset();
+  discountValueEl.value = '';
+  tipValueEl.value = '';
+  tipTypeEl.value = 'fixed';
+  if(hdrName) hdrName.textContent = '';
+  if(hdrPhone) hdrPhone.textContent = '';
+  if(hdrCity) hdrCity.textContent = '';
+  if(hdrAddress) hdrAddress.textContent = '';
+  if(hdrPos) hdrPos.textContent = '';
+  renderHistory();
+  alert('Pedido finalizado y factura descargada.');
+}
+
+/* ==========================================
+      PDF FACTURA
+   ==========================================
+*/
+
+async function generateInvoicePDF(order){
+  try{
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({unit:'pt',format:'A4'});
+    const left = 40; let y = 40;
+    doc.setFontSize(18); doc.setTextColor(45,30,55); doc.text('Factura - POS Demo', left, y);
+    y += 24;
+    doc.setFontSize(11); doc.setTextColor(80,80,80);
+    doc.text(`Pedido: ${order.id}`, left, y); y += 16;
+    doc.text(`Fecha: ${new Date(order.createdAt).toLocaleString()}`, left, y); y += 18;
+
+    doc.text(`Cliente: ${order.user?.name || 'N/D'}`, left, y); y += 14;
+    doc.text(`Teléfono: ${order.user?.phone || 'N/D'} · Ciudad: ${order.user?.city || 'N/D'}`, left, y); y += 14;
+    doc.text(`Dirección: ${order.user?.address || 'N/D'} · Punto de venta: ${order.user?.pos || 'N/D'}`, left, y); y += 20;
+
+    doc.setFontSize(12); doc.text('Items', left, y); doc.text('Cantidad', 320, y); doc.text('Precio', 420, y); y += 10;
+    doc.setLineWidth(0.5); doc.line(left, y, 550, y); y += 14;
+
+    order.items.forEach(it=>{
+      doc.setFontSize(11);
+      const maxWidth = 260;
+      const lines = doc.splitTextToSize(it.name, maxWidth);
+      doc.text(lines, left, y);
+      doc.text(String(it.qty), 320, y);
+      doc.text(money(it.price * it.qty), 420, y);
+      y += (16 * lines.length);
+      if(y > 700){ doc.addPage(); y = 40; }
+    });
+
+    y += 8; doc.line(left, y, 550, y); y += 18;
+    doc.text(`Subtotal: ${money(order.subtotal)}`, 380, y); y += 16;
+    doc.text(`Descuento: ${money(order.discount)}`, 380, y); y += 16;
+    doc.text(`Impuesto (8%): ${money(order.tax)}`, 380, y); y += 16;
+    
+    const tipText = order.tip?.type === 'percent' 
+      ? `Propina (${order.tip.value}%): ${money(order.tip.value * order.subtotal / 100)}`
+      : `Propina: ${money(order.tip?.value || 0)}`;
+    doc.text(tipText, 380, y); y += 16;
+    
+    doc.setFontSize(14); doc.setTextColor(237,34,47); doc.text(`TOTAL: ${money(order.total)}`, 380, y);
+
+    doc.save(`${order.id}_factura.pdf`);
+  }catch(err){ console.error('Error generando PDF', err); alert('Error al generar PDF. Revisa consola.'); }
+}
+
+</script>
+</body>
+</html>
