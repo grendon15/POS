@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>POS Profesional - Responsive + Factura PDF</title>
+  <title>Sushi Market - POS Profesional</title>
   <meta name="description" content="POS demo responsive, historial, factura PDF" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,7 @@
       --bg:#f8ead8;
       --surface:#fff;
       --accent:#2d1e37;
-      --accent-2:#ed222f;
+      --accent-2:#FF1D2F;
       --muted:#6b7b8f;
       --shadow: 0 8px 24px rgba(45,30,55,0.08);
       --radius:12px;
@@ -116,7 +116,7 @@
     }
     input:focus, select:focus {
       border-color: var(--accent-2);
-      outline-color: rgba(237, 34, 47, 0.1);
+      outline-color: rgba(255, 29, 47, 0.1);
     }
     
     /* Estilos para subcategorías anidadas */
@@ -141,191 +141,320 @@
     .combo-category-btn:hover .name {
       color: white;
     }
+    
+    /* Estilos para subproductos en carrito */
+    .subproduct-item {
+      padding-left: 20px;
+      margin-top: 4px;
+      border-left: 2px solid var(--accent-2);
+    }
+    .subproduct-name {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .combo-badge {
+      background: linear-gradient(90deg, var(--accent-2), var(--accent));
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    
+    /* Navegación con logo */
+    .navbar {
+      background-color: #FF1D2F;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(255, 29, 47, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .navbar-container {
+      max-width: 1200px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .navbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .logo-image {
+      height: 60px;
+      width: auto;
+    }
+    
+    .logo-text-container {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .logo-main-text {
+      color: white;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+    
+    .logo-sub-text {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 2px;
+      margin-top: 2px;
+    }
+    
+    .navbar-actions {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .navbar-user {
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+    }
+    
+    .nav-btn {
+      background: white;
+      color: #FF1D2F;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.9);
+      transform: translateY(-2px);
+    }
+    
+    /* Ajustes para el contenido principal */
+    .content-wrapper {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div id="initial-card" class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <h1>Registro inicial</h1>
-          <div class="small">Ingresa datos para iniciar el pedido</div>
-        </div>
-        <div class="brand">
-          <div class="logo">POS</div>
-        </div>
-      </div>
-
-      <form id="initialForm" style="margin-top:12px">
-        <div class="row">
-          <div style="flex:1">
-            <label for="phone">Teléfono</label>
-            <input id="phone" name="phone" placeholder="Ej: 3001234567" autocomplete="tel" />
-          </div>
-          <div style="flex:2">
-            <label for="name">Nombre</label>
-            <input id="name" name="name" placeholder="Nombre del cliente" autocomplete="name" />
-          </div>
-        </div>
-        <div class="row">
-          <div style="flex:1">
-            <label for="city">Ciudad</label>
-            <input id="city" name="city" placeholder="Ciudad" />
-          </div>
-          <div style="flex:2">
-            <label for="address">Dirección</label>
-            <input id="address" name="address" placeholder="Dirección de entrega" />
-          </div>
-          <div style="flex:1">
-            <label for="pos">Punto de Venta</label>
-            <input id="pos" name="pos" placeholder="Punto de venta" />
-          </div>
-        </div>
-        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
-          <button type="submit" class="btn">Continuar</button>
-          <button type="button" id="open-history" class="btn ghost">Historial</button>
-        </div>
-      </form>
-    </div>
-
-    <div id="app" style="display:none">
-      <div class="top-info card" style="margin-top:14px;display:flex;justify-content:space-between;align-items:center">
-        <div class="user">
-          <div style="font-weight:700;color:var(--accent)" id="hdrName"></div>
-          <small id="hdrPhone" class="small"></small>
-          <small id="hdrCity" class="small"></small>
-          <small id="hdrAddress" class="small"></small>
-          <small id="hdrPos" class="small"></small>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button id="btnReset" class="btn ghost">Cerrar sesión</button>
-          <button id="btnOpenHistory2" class="btn secondary">Ver historial</button>
+  <!-- Navegación con logo -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-logo">
+        <img src="https://sushimarket.com.co/wp-content/uploads/2024/02/Grouplogo-e1707409804431.webp" alt="Sushi Market Logo" class="logo-image">
+        <div class="logo-text-container">
+          <div class="logo-main-text">SUSHI MARKET</div>
+          <div class="logo-sub-text">POS Virtual</div>
         </div>
       </div>
-
-      <div class="main">
-        <div class="panel">
-          <h3>Categorías</h3>
-          <div id="categories" class="categories"></div>
+      <div class="navbar-actions">
+        <div id="navUserInfo" class="navbar-user" style="display: none;">
+          <span id="navUserName"></span>
         </div>
-
-        <div class="panel">
-          <div id="categoryHeader">
-            <h3 id="categoryTitle">Platos</h3>
-          </div>
-          <div id="products" class="products"></div>
-        </div>
-
-        <div class="panel" style="display:flex;flex-direction:column;justify-content:space-between">
-          <div>
-            <h3>Pedido</h3>
-            <div id="cartList" class="cart-list"></div>
-          </div>
-
-          <div class="right-footer">
-            <div class="totals">
-              <div class="small">Subtotal</div>
-              <div id="cartSubtotal" style="font-weight:700;color:var(--accent)">$0.00</div>
-            </div>
-            
-            <!-- Campo de descuento -->
-            <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
-              <div class="small" style="flex:1">Descuento</div>
-              <div style="display:flex;gap:4px;align-items:center">
-                <input id="discountValue" type="number" min="0" placeholder="0" style="width:70px;padding:6px;border-radius:6px;border:1px solid #f0e6d8" />
-                <select id="discountType" style="padding:6px;border-radius:6px;border:1px solid #f0e6d8">
-                  <option value="fixed">$</option>
-                  <option value="percent">%</option>
-                </select>
-                <button id="applyDiscount" class="btn ghost" style="padding:6px 8px">Aplicar</button>
-              </div>
-            </div>
-            <div class="totals">
-              <div class="small">Descuento aplicado</div>
-              <div id="cartDiscount" style="font-weight:700;color:var(--accent-2)">$0.00</div>
-            </div>
-            
-            <div class="totals">
-              <div class="small">Impuesto (8%)</div>
-              <div id="cartTax" style="font-weight:700;color:var(--accent)">$0.00</div>
-            </div>
-            
-            <!-- Campo de propina mejorado (valor o porcentaje) -->
-            <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
-              <div class="small" style="flex:1">Propina</div>
-              <div style="display:flex;gap:4px;align-items:center">
-                <input id="tipValue" type="number" min="0" placeholder="0" style="width:70px;padding:6px;border-radius:6px;border:1px solid #f0e6d8" />
-                <select id="tipType" style="padding:6px;border-radius:6px;border:1px solid #f0e6d8">
-                  <option value="fixed">$</option>
-                  <option value="percent">%</option>
-                </select>
-                <button id="applyTip" class="btn ghost" style="padding:6px 8px">Aplicar</button>
-              </div>
-            </div>
-            <div class="totals">
-              <div class="small">Propina</div>
-              <div id="cartTip" style="font-weight:700;color:var(--accent-2)">$0.00</div>
-            </div>
-            
-            <div class="totals" style="font-size:18px">
-              <div style="color:var(--accent);font-weight:600">Total a pagar</div>
-              <div id="cartTotal" style="font-weight:800;color:var(--accent-2)">$0.00</div>
-            </div>
-            <div style="display:flex;gap:10px">
-              <select id="payMethod" style="flex:1;padding:10px;border-radius:8px;border:1px solid #f0e6d8;background:#fff">
-                <option value="efectivo">Efectivo</option>
-                <option value="transferencia">Transferencia</option>
-              </select>
-              <button id="btnTotalizar" class="btn" style="flex:1">Totalizar</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="historyView" style="display:none;margin-top:14px">
-        <div class="card">
-          <h3>Historial de pedidos</h3>
-          <div class="history-controls" style="margin-top:10px">
-            <input id="filterPhone" placeholder="Filtrar por teléfono" style="padding:8px;border-radius:8px;border:1px solid #f0e6d8" />
-            <button id="btnApplyFilters" class="btn ghost">Aplicar</button>
-            <button id="btnClearFilters" class="btn ghost">Limpiar</button>
-            <div style="flex:1"></div>
-            <button id="btnExportCSV" class="btn ghost">Exportar CSV</button>
-            <button id="btnClearHistory" class="btn" style="background:var(--accent-2)">Eliminar historial</button>
-          </div>
-          <div id="historyList" class="history-list" style="margin-top:12px"></div>
-        </div>
+        <button id="navLogout" class="nav-btn" style="display: none;">Atras</button>
       </div>
     </div>
+  </nav>
 
-    <!-- modal -->
-    <div id="modalBackdrop" class="modal-backdrop">
-      <div class="modal">
+  <div class="content-wrapper">
+    <div class="wrap">
+      <div id="initial-card" class="card">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <h3>Resumen del pedido</h3>
-          <button id="closeModal" class="btn ghost">Cerrar</button>
-        </div>
-        <div id="modalItems" style="max-height:260px;overflow:auto;margin-top:10px"></div>
-        <div style="margin-top:12px">
-          <div class="totals"><div>Subtotal</div><div id="modalSubtotal" style="color:var(--accent)">$0.00</div></div>
-          <div class="totals"><div>Descuento</div><div id="modalDiscount" style="color:var(--accent-2)">$0.00</div></div>
-          <div class="totals"><div>Impuesto (8%)</div><div id="modalTax" style="color:var(--accent)">$0.00</div></div>
-          <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-            <label class="small">Propina</label>
-            <input id="modalTip" type="number" min="0" value="0" style="padding:8px;border-radius:8px;border:1px solid #f0e6d8;width:100px" />
-            <select id="modalTipType" style="padding:8px;border-radius:8px;border:1px solid #f0e6d8">
-              <option value="fixed">$</option>
-              <option value="percent">%</option>
-            </select>
+          <div>
+            <h1>Registro inicial</h1>
+            <div class="small">Ingresa datos para iniciar el pedido</div>
           </div>
-          <div style="display:flex;gap:8px;margin-top:8px;align-items:center"><label class="small">Método de pago</label><select id="modalPayMethod" style="padding:8px;border-radius:8px;border:1px solid #f0e6d8"><option value="efectivo">Efectivo</option><option value="transferencia">Transferencia</option></select></div>
+          <div class="brand">
+            <div class="logo">POS</div>
+          </div>
         </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-          <button id="btnModalFinalize" class="btn">Finalizar y Facturar (PDF)</button>
+
+        <form id="initialForm" style="margin-top:12px">
+          <div class="row">
+            <div style="flex:1">
+              <label for="phone">Teléfono</label>
+              <input id="phone" name="phone" placeholder="Ej: 3001234567" autocomplete="tel" />
+            </div>
+            <div style="flex:2">
+              <label for="name">Nombre</label>
+              <input id="name" name="name" placeholder="Nombre del cliente" autocomplete="name" />
+            </div>
+          </div>
+          <div class="row">
+            <div style="flex:1">
+              <label for="city">Ciudad</label>
+              <input id="city" name="city" placeholder="Ciudad" />
+            </div>
+            <div style="flex:2">
+              <label for="address">Dirección</label>
+              <input id="address" name="address" placeholder="Dirección de entrega" />
+            </div>
+            <div style="flex:1">
+              <label for="pos">Punto de Venta</label>
+              <input id="pos" name="pos" placeholder="Punto de venta" />
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+            <button type="submit" class="btn">Continuar</button>
+            <button type="button" id="open-history" class="btn ghost">Historial</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="app" style="display:none">
+        <div class="top-info card" style="margin-top:14px;display:flex;justify-content:space-between;align-items:center">
+          <div class="user">
+            <div style="font-weight:700;color:var(--accent)" id="hdrName"></div>
+            <small id="hdrPhone" class="small"></small>
+            <small id="hdrCity" class="small"></small>
+            <small id="hdrAddress" class="small"></small>
+            <small id="hdrPos" class="small"></small>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button id="btnReset" class="btn ghost">Atras</button>
+            <button id="btnOpenHistory2" class="btn secondary">Ver historial</button>
+          </div>
+        </div>
+
+        <div class="main">
+          <div class="panel">
+            <h3>Categorías</h3>
+            <div id="categories" class="categories"></div>
+          </div>
+
+          <div class="panel">
+            <div id="categoryHeader">
+              <h3 id="categoryTitle">Platos</h3>
+            </div>
+            <div id="products" class="products"></div>
+          </div>
+
+          <div class="panel" style="display:flex;flex-direction:column;justify-content:space-between">
+            <div>
+              <h3>Pedido</h3>
+              <div id="cartList" class="cart-list"></div>
+            </div>
+
+            <div class="right-footer">
+              <div class="totals">
+                <div class="small">Subtotal</div>
+                <div id="cartSubtotal" style="font-weight:700;color:var(--accent)">$0.00</div>
+              </div>
+              
+              <!-- Campo de descuento -->
+              <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+                <div class="small" style="flex:1">Descuento</div>
+                <div style="display:flex;gap:4px;align-items:center">
+                  <input id="discountValue" type="number" min="0" placeholder="0" style="width:70px;padding:6px;border-radius:6px;border:1px solid #f0e6d8" />
+                  <select id="discountType" style="padding:6px;border-radius:6px;border:1px solid #f0e6d8">
+                    <option value="fixed">$</option>
+                    <option value="percent">%</option>
+                  </select>
+                  <button id="applyDiscount" class="btn ghost" style="padding:6px 8px">Aplicar</button>
+                </div>
+              </div>
+              <div class="totals">
+                <div class="small">Descuento aplicado</div>
+                <div id="cartDiscount" style="font-weight:700;color:var(--accent-2)">$0.00</div>
+              </div>
+              
+              <div class="totals">
+                <div class="small">Impuesto (8%)</div>
+                <div id="cartTax" style="font-weight:700;color:var(--accent)">$0.00</div>
+              </div>
+              
+              <!-- Campo de propina mejorado (valor o porcentaje) -->
+              <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+                <div class="small" style="flex:1">Propina</div>
+                <div style="display:flex;gap:4px;align-items:center">
+                  <input id="tipValue" type="number" min="0" placeholder="0" style="width:70px;padding:6px;border-radius:6px;border:1px solid #f0e6d8" />
+                  <select id="tipType" style="padding:6px;border-radius:6px;border:1px solid #f0e6d8">
+                    <option value="fixed">$</option>
+                    <option value="percent">%</option>
+                  </select>
+                  <button id="applyTip" class="btn ghost" style="padding:6px 8px">Aplicar</button>
+                </div>
+              </div>
+              <div class="totals">
+                <div class="small">Propina</div>
+                <div id="cartTip" style="font-weight:700;color:var(--accent-2)">$0.00</div>
+              </div>
+              
+              <div class="totals" style="font-size:18px">
+                <div style="color:var(--accent);font-weight:600">Total a pagar</div>
+                <div id="cartTotal" style="font-weight:800;color:var(--accent-2)">$0.00</div>
+              </div>
+              <div style="display:flex;gap:10px">
+                <select id="payMethod" style="flex:1;padding:10px;border-radius:8px;border:1px solid #f0e6d8;background:#fff">
+                  <option value="efectivo">Efectivo</option>
+                  <option value="transferencia">Transferencia</option>
+                </select>
+                <button id="btnTotalizar" class="btn" style="flex:1">Totalizar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="historyView" style="display:none;margin-top:14px">
+          <div class="card">
+            <h3>Historial de pedidos</h3>
+            <div class="history-controls" style="margin-top:10px">
+              <input id="filterPhone" placeholder="Filtrar por teléfono" style="padding:8px;border-radius:8px;border:1px solid #f0e6d8" />
+              <button id="btnApplyFilters" class="btn ghost">Aplicar</button>
+              <button id="btnClearFilters" class="btn ghost">Limpiar</button>
+              <div style="flex:1"></div>
+              <button id="btnExportCSV" class="btn ghost">Exportar CSV</button>
+              <button id="btnClearHistory" class="btn" style="background:var(--accent-2)">Eliminar historial</button>
+            </div>
+            <div id="historyList" class="history-list" style="margin-top:12px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- modal -->
+      <div id="modalBackdrop" class="modal-backdrop">
+        <div class="modal">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3>Resumen del pedido</h3>
+            <button id="closeModal" class="btn ghost">Cerrar</button>
+          </div>
+          <div id="modalItems" style="max-height:260px;overflow:auto;margin-top:10px"></div>
+          <div style="margin-top:12px">
+            <div class="totals"><div>Subtotal</div><div id="modalSubtotal" style="color:var(--accent)">$0.00</div></div>
+            <div class="totals"><div>Descuento</div><div id="modalDiscount" style="color:var(--accent-2)">$0.00</div></div>
+            <div class="totals"><div>Impuesto (8%)</div><div id="modalTax" style="color:var(--accent)">$0.00</div></div>
+            <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+              <label class="small">Propina</label>
+              <input id="modalTip" type="number" min="0" value="0" style="padding:8px;border-radius:8px;border:1px solid #f0e6d8;width:100px" />
+              <select id="modalTipType" style="padding:8px;border-radius:8px;border:1px solid #f0e6d8">
+                <option value="fixed">$</option>
+                <option value="percent">%</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:8px;align-items:center"><label class="small">Método de pago</label><select id="modalPayMethod" style="padding:8px;border-radius:8px;border:1px solid #f0e6d8"><option value="efectivo">Efectivo</option><option value="transferencia">Transferencia</option></select></div>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+            <button id="btnModalFinalize" class="btn">Finalizar y Facturar (PDF)</button>
+          </div>
         </div>
       </div>
     </div>
-
   </div>
 
   <!-- jsPDF CDN -->
@@ -337,6 +466,26 @@
    =========================== */
 
 const productsData = {
+  "Adiciones - Recursos":[
+    {id:'rec1',name:'Hashis'},
+    {id:'rec2',name:'Ayuditas'},
+    {id:'rec3',name:'Salsa Anguila'},
+    {id:'rec4',name:'Salsa Soya'},
+    {id:'rec5',name:'Genjibre'},
+    {id:'rec6',name:'Wasabi'},
+    {id:'rec7',name:'Sin Salsas'},
+    {id:'rec8',name:'Salsa Aparte'},
+    {id:'rec9',name:'Sin Ajonjoli'},
+    {id:'rec10',name:'Sin Aguacate'},
+    {id:'rec11',name:'Sin Picante'},
+    {id:'rec12',name:'Sin Zanahoria'},
+    {id:'rec13',name:'Sin Mayonesa'},
+    {id:'rec14',name:'Alergico a Mariscos'},
+    {id:'rec15',name:'Salsa Dinamita',price:4500},
+    {id:'rec16',name:'Salsa Cuzco',price:6500},
+    {id:'rec17',name:'Salsa Itako',price:8000},
+    {id:'rec18',name:'Salsa Samurai',price:7500}
+  ],
   "Bebidas": [
     {id:'b1',name:'Agua con Gas',price:8000},
     {id:'b2',name:'Agua sin Gas',price:9000},
@@ -392,71 +541,458 @@ const productsData = {
     {
       id:'combo1',
       name:'Combo Yuki',
-      price:55000,
+      price:131500,
       subcategory: true,
       size: 'Completo',
       subcategories: [
         {
           name: 'Bebidas',
           products: [
-            {id:'b3',name:'Coca Cola Original',price:0},
-            {id:'b4',name:'Coca Cola Zero',price:0},
-            {id:'b14',name:'Limonada Natural',price:0},
-            {id:'b15',name:'Limonada Cerezada',price:0}
+            {id:'b22',name:'Agua con Gas',price:0,comboSubproductPrice: 0},
+            {id:'b23',name:'Agua sin Gas',price:0,comboSubproductPrice: 0},
+            {id:'b24',name:'Coca Cola Original',price:0,comboSubproductPrice: 0},
+            {id:'b25',name:'Coca Cola Zero',price:0,comboSubproductPrice: 0},
+            {id:'b26',name:'Soda 300ml',price:0,comboSubproductPrice: 0},
+            {id:'b27',name:'Hatsu Amarillo',price:0,comboSubproductPrice: 3500},
+            {id:'b28',name:'Hatsu Azul',price:0,comboSubproductPrice: 3500},
+            {id:'b29',name:'Hatsu Blanco',price:0,comboSubproductPrice: 3500},
+            {id:'b30',name:'Hatsu Morado',price:0,comboSubproductPrice: 3500},
+            {id:'b31',name:'Hatsu Negro',price:0,comboSubproductPrice: 3500},
+            {id:'b32',name:'Hatsu Rojo',price:0,comboSubproductPrice: 3500},
+            {id:'b33',name:'Hatsu Rosado',price:0,comboSubproductPrice: 3500},
+            {id:'b34',name:'Hatsu Verde',price:0,comboSubproductPrice: 3500},
+            {id:'b35',name:'Club Colombia Dorada',price:0,comboSubproductPrice: 5000},
+            {id:'b36',name:'Club Colombia Negra',price:0,comboSubproductPrice: 5000},
+            {id:'b37',name:'Club Colombia Roja',price:0,comboSubproductPrice: 5000},
+            {id:'b38',name:'Corona',price:0,comboSubproductPrice: 5000},
+            {id:'b39',name:'Cusqueña',price:0,comboSubproductPrice: 5000},
+            {id:'b40',name:'Stella Artois',price:0,comboSubproductPrice: 5000},
           ]
         },
         {
           name: 'Entradas', 
           products: [
-            {id:'bo1',name:'Asian Crunch',price:0},
-            {id:'bo2',name:'Calamar Crunchy',price:0},
-            {id:'bo3',name:'Camarones Dragon',price:0},
-            {id:'bo4',name:'Coco Ebi',price:0}
+            {id:'bo15',name:'Camarones Dragon',price:0, comboSubproductPrice:0},
+            {id:'bo16',name:'Coctel de Camaron',price:0, comboSubproductPrice:0},
+            {id:'bo17',name:'Croquetas de Cangrejo',price:0, comboSubproductPrice:0},
+            {id:'bo18',name:'Coco Ebi',price:0, comboSubproductPrice:0},
+            {id:'bo19',name:'Coco Roll',price:0, comboSubproductPrice:0},
+            {id:'bo20',name:'Kani Especial',price:0, comboSubproductPrice:0},
+            {id:'bo21',name:'Sensación',price:0, comboSubproductPrice:0},
+            {id:'bo22',name:'Ceviche Limeño',price:0, comboSubproductPrice:0},
           ]
         },
         {
           name: 'Rolls Especiales',
           products: [
-            {id:'res-x6-1',name:'Aburi x6',price:0},
-            {id:'res-x6-2',name:'California x6',price:0},
-            {id:'res-x6-3',name:'Cholo x6',price:0},
-            {id:'res-x6-4',name:'Citrus x6',price:0}
+            {id:'res-x12-15',name:'Aburi x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-16',name:'California x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-17',name:'Cholo x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-18',name:'Citrus x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-19',name:'Cuzco x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-20',name:'Fujishowa x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-21',name:'Ojo de Tigre x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-22',name:'Premium x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-23',name:'Roll del Cheff x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-24',name:'Sake  x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-25',name:'Salmon Skin x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-26',name:'Tofu x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-27',name:'Veggie x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-28',name:'Ebi x12',price:0, comboSubproductPrice: 0}
           ]
         }
       ]
     },
     {
       id:'combo2',
+      name:'Combo Yuki',
+      price:131500,
+      subcategory: true,
+      size: 'Medios',
+      subcategories: [
+        {
+          name: 'Bebidas',
+          products: [
+            {id:'b22',name:'Agua con Gas',price:0,comboSubproductPrice: 0},
+            {id:'b23',name:'Agua sin Gas',price:0,comboSubproductPrice: 0},
+            {id:'b24',name:'Coca Cola Original',price:0,comboSubproductPrice: 0},
+            {id:'b25',name:'Coca Cola Zero',price:0,comboSubproductPrice: 0},
+            {id:'b26',name:'Soda 300ml',price:0,comboSubproductPrice: 0},
+            {id:'b27',name:'Hatsu Amarillo',price:0,comboSubproductPrice: 3500},
+            {id:'b28',name:'Hatsu Azul',price:0,comboSubproductPrice: 3500},
+            {id:'b29',name:'Hatsu Blanco',price:0,comboSubproductPrice: 3500},
+            {id:'b30',name:'Hatsu Morado',price:0,comboSubproductPrice: 3500},
+            {id:'b31',name:'Hatsu Negro',price:0,comboSubproductPrice: 3500},
+            {id:'b32',name:'Hatsu Rojo',price:0,comboSubproductPrice: 3500},
+            {id:'b33',name:'Hatsu Rosado',price:0,comboSubproductPrice: 3500},
+            {id:'b34',name:'Hatsu Verde',price:0,comboSubproductPrice: 3500},
+            {id:'b35',name:'Club Colombia Dorada',price:0,comboSubproductPrice: 5000},
+            {id:'b36',name:'Club Colombia Negra',price:0,comboSubproductPrice: 5000},
+            {id:'b37',name:'Club Colombia Roja',price:0,comboSubproductPrice: 5000},
+            {id:'b38',name:'Corona',price:0,comboSubproductPrice: 5000},
+            {id:'b39',name:'Cusqueña',price:0,comboSubproductPrice: 5000},
+            {id:'b40',name:'Stella Artois',price:0,comboSubproductPrice: 5000},
+          ]
+        },
+        {
+          name: 'Entradas',
+          products: [
+            {id:'bo15',name:'Camarones Dragon',price:0, comboSubproductPrice:0},
+            {id:'bo16',name:'Coctel de Camaron',price:0, comboSubproductPrice:0},
+            {id:'bo17',name:'Croquetas de Cangrejo',price:0, comboSubproductPrice:0},
+            {id:'bo18',name:'Coco Ebi',price:0, comboSubproductPrice:0},
+            {id:'bo19',name:'Coco Roll',price:0, comboSubproductPrice:0},
+            {id:'bo20',name:'Kani Especial',price:0, comboSubproductPrice:0},
+            {id:'bo21',name:'Sensación',price:0, comboSubproductPrice:0},
+            {id:'bo22',name:'Ceviche Limeño',price:0, comboSubproductPrice:0},
+          ]
+        },
+        {
+          name: 'Rolls Medios',
+          products: [
+            {id:'res-x6-15',name:'Aburi x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-16',name:'California x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-17',name:'Cholo x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-18',name:'Citrus x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-19',name:'Cuzco x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-20',name:'Fujishowa x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-21',name:'Ojo de Tigre x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-22',name:'Premium x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-23',name:'Roll del Cheff x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-24',name:'Sake  x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-25',name:'Salmon Skin x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-26',name:'Tofu x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-27',name:'Veggie x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-28',name:'Ebi x6',price:0, comboSubproductPrice: 2000}
+          ]
+        }
+      ]
+    },
+    {
+      id:'combo3',
       name:'Combo Kik',
-      price:65000,
+      price:142500,
       subcategory: true,
       size: 'Completo',
       subcategories: [
         {
           name: 'Bebidas',
           products: [
-            {id:'b6',name:'Hatsu Amarillo',price:3000},
-            {id:'b7',name:'Hatsu Azul',price:0},
-            {id:'b8',name:'Hatsu Blanco',price:0},
-            {id:'b17',name:'Jugo de Fresa',price:0}
+            {id:'b22',name:'Agua con Gas',price:0,comboSubproductPrice: 0},
+            {id:'b23',name:'Agua sin Gas',price:0,comboSubproductPrice: 0},
+            {id:'b24',name:'Coca Cola Original',price:0,comboSubproductPrice: 0},
+            {id:'b25',name:'Coca Cola Zero',price:0,comboSubproductPrice: 0},
+            {id:'b26',name:'Soda 300ml',price:0,comboSubproductPrice: 0},
+            {id:'b27',name:'Hatsu Amarillo',price:0,comboSubproductPrice: 3500},
+            {id:'b28',name:'Hatsu Azul',price:0,comboSubproductPrice: 3500},
+            {id:'b29',name:'Hatsu Blanco',price:0,comboSubproductPrice: 3500},
+            {id:'b30',name:'Hatsu Morado',price:0,comboSubproductPrice: 3500},
+            {id:'b31',name:'Hatsu Negro',price:0,comboSubproductPrice: 3500},
+            {id:'b32',name:'Hatsu Rojo',price:0,comboSubproductPrice: 3500},
+            {id:'b33',name:'Hatsu Rosado',price:0,comboSubproductPrice: 3500},
+            {id:'b34',name:'Hatsu Verde',price:0,comboSubproductPrice: 3500},
+            {id:'b35',name:'Club Colombia Dorada',price:0,comboSubproductPrice: 5000},
+            {id:'b36',name:'Club Colombia Negra',price:0,comboSubproductPrice: 5000},
+            {id:'b37',name:'Club Colombia Roja',price:0,comboSubproductPrice: 5000},
+            {id:'b38',name:'Corona',price:0,comboSubproductPrice: 5000},
+            {id:'b39',name:'Cusqueña',price:0,comboSubproductPrice: 5000},
+            {id:'b40',name:'Stella Artois',price:0,comboSubproductPrice: 5000},
           ]
         },
         {
           name: 'Entradas',
           products: [
-            {id:'bo5',name:'Coco Roll',price:0},
-            {id:'bo6',name:'Croqueta de Camaron',price:0},
-            {id:'bo7',name:'Croquetas de Cangrejo',price:0},
-            {id:'bo8',name:'Edamame Trufado',price:0}
+            {id:'bo15',name:'Camarones Dragon',price:0, comboSubproductPrice:0},
+            {id:'bo16',name:'Coctel de Camaron',price:0, comboSubproductPrice:0},
+            {id:'bo17',name:'Croquetas de Cangrejo',price:0, comboSubproductPrice:0},
+            {id:'bo18',name:'Coco Ebi',price:0, comboSubproductPrice:0},
+            {id:'bo19',name:'Coco Roll',price:0, comboSubproductPrice:0},
+            {id:'bo20',name:'Kani Especial',price:0, comboSubproductPrice:0},
+            {id:'bo21',name:'Sensación',price:0, comboSubproductPrice:0},
+            {id:'bo22',name:'Ceviche Limeño',price:0, comboSubproductPrice:0},
           ]
         },
         {
-          name: 'Rolls Recomendados',
+          name: 'Rolls Completos',
           products: [
-            {id:'rec-x6-1',name:'Akira X6',price:0},
-            {id:'rec-x6-2',name:'Emperador x6',price:0},
-            {id:'rec-x6-3',name:'Explotion x6',price:0},
-            {id:'rec-x6-4',name:'Gori Gori x6',price:0}
+            {id:'rec-x12-13',name:'Akira X12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-14',name:'Emperador x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-15',name:'Explotion x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-16',name:'Gori Gori x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-17',name:'Itako x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-18',name:'Master x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-19',name:'Meraki x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-20',name:'Roll Acevichado x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-21',name:'Samurai x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-22',name:'SM tempurizado x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-23',name:'Tropical x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-23',name:'Volcan x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-15',name:'Aburi x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-16',name:'California x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-17',name:'Cholo x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-18',name:'Citrus x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-19',name:'Cuzco x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-20',name:'Fujishowa x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-21',name:'Ojo de Tigre x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-22',name:'Premium x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-23',name:'Roll del Cheff x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-24',name:'Sake  x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-25',name:'Salmon Skin x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-26',name:'Tofu x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-27',name:'Veggie x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-28',name:'Ebi x12',price:0, comboSubproductPrice: 0}
+          ]
+        }
+      ]
+    },{
+      id:'combo4',
+      name:'Combo Kik',
+      price:142500,
+      subcategory: true,
+      size: 'Medios',
+      subcategories: [
+        {
+          name: 'Bebidas',
+          products: [
+            {id:'b22',name:'Agua con Gas',price:0,comboSubproductPrice: 0},
+            {id:'b23',name:'Agua sin Gas',price:0,comboSubproductPrice: 0},
+            {id:'b24',name:'Coca Cola Original',price:0,comboSubproductPrice: 0},
+            {id:'b25',name:'Coca Cola Zero',price:0,comboSubproductPrice: 0},
+            {id:'b26',name:'Soda 300ml',price:0,comboSubproductPrice: 0},
+            {id:'b27',name:'Hatsu Amarillo',price:0,comboSubproductPrice: 3500},
+            {id:'b28',name:'Hatsu Azul',price:0,comboSubproductPrice: 3500},
+            {id:'b29',name:'Hatsu Blanco',price:0,comboSubproductPrice: 3500},
+            {id:'b30',name:'Hatsu Morado',price:0,comboSubproductPrice: 3500},
+            {id:'b31',name:'Hatsu Negro',price:0,comboSubproductPrice: 3500},
+            {id:'b32',name:'Hatsu Rojo',price:0,comboSubproductPrice: 3500},
+            {id:'b33',name:'Hatsu Rosado',price:0,comboSubproductPrice: 3500},
+            {id:'b34',name:'Hatsu Verde',price:0,comboSubproductPrice: 3500},
+            {id:'b35',name:'Club Colombia Dorada',price:0,comboSubproductPrice: 5000},
+            {id:'b36',name:'Club Colombia Negra',price:0,comboSubproductPrice: 5000},
+            {id:'b37',name:'Club Colombia Roja',price:0,comboSubproductPrice: 5000},
+            {id:'b38',name:'Corona',price:0,comboSubproductPrice: 5000},
+            {id:'b39',name:'Cusqueña',price:0,comboSubproductPrice: 5000},
+            {id:'b40',name:'Stella Artois',price:0,comboSubproductPrice: 5000},
+          ]
+        },
+        {
+          name: 'Entradas',
+          products: [
+            {id:'bo15',name:'Camarones Dragon',price:0, comboSubproductPrice:0},
+            {id:'bo16',name:'Coctel de Camaron',price:0, comboSubproductPrice:0},
+            {id:'bo17',name:'Croquetas de Cangrejo',price:0, comboSubproductPrice:0},
+            {id:'bo18',name:'Coco Ebi',price:0, comboSubproductPrice:0},
+            {id:'bo19',name:'Coco Roll',price:0, comboSubproductPrice:0},
+            {id:'bo20',name:'Kani Especial',price:0, comboSubproductPrice:0},
+            {id:'bo21',name:'Sensación',price:0, comboSubproductPrice:0},
+            {id:'bo22',name:'Ceviche Limeño',price:0, comboSubproductPrice:0},
+          ]
+        },
+        {
+          name: 'Rolls Completos',
+          products: [
+            {id:'rec-x6-13',name:'Akira X6',price:0, comboSubproductPrice: 2000},
+            {id:'rec-x6-14',name:'Emperador x6',price:0, comboSubproductPrice:2000 },
+            {id:'rec-x6-15',name:'Explotion x6',price:0, comboSubproductPrice: 2000},
+            {id:'rec-x6-16',name:'Gori Gori x6',price:0, comboSubproductPrice: 2000},
+            {id:'rec-x6-17',name:'Itako x6',price:0, comboSubproductPrice: 2000},
+            {id:'rec-x6-18',name:'Master x6',price:0, comboSubproductPrice: 2000},
+            {id:'rec-x6-19',name:'Meraki x6',price:0, comboSubproductPrice: 2000},
+            {id:'rec-x6-20',name:'Roll Acevichado x6',price:0, comboSubproductPrice: 2000},
+            {id:'rec-x6-21',name:'Samurai x6',price:0, comboSubproductPrice: 2000},
+            {id:'rec-x6-22',name:'SM tempurizado x6',price:0, comboSubproductPrice: 2000},
+            {id:'rec-x6-23',name:'Tropical x6',price:0, comboSubproductPrice: 2000},
+            {id:'rec-x6-23',name:'Volcan x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-15',name:'Aburi x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-16',name:'California x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-17',name:'Cholo x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-18',name:'Citrus x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-19',name:'Cuzco x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-20',name:'Fujishowa x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-21',name:'Ojo de Tigre x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-22',name:'Premium x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-23',name:'Roll del Cheff x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-24',name:'Sake x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-25',name:'Salmon Skin x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-26',name:'Tofu x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-27',name:'Veggie x6',price:0, comboSubproductPrice: 2000},
+            {id:'res-x6-28',name:'Ebi x6',price:0, comboSubproductPrice: 2000}
+          ]
+        }
+      ]
+    },
+    {
+      id:'combo5',
+      name:'Combo Taz Taz',
+      price:205000,
+      subcategory: true,
+      size: 'Completo',
+      subcategories: [
+        {
+          name: 'Bebidas',
+          products: [
+            {id:'b22',name:'Agua con Gas',price:0,comboSubproductPrice: 0},
+            {id:'b23',name:'Agua sin Gas',price:0,comboSubproductPrice: 0},
+            {id:'b24',name:'Coca Cola Original',price:0,comboSubproductPrice: 0},
+            {id:'b25',name:'Coca Cola Zero',price:0,comboSubproductPrice: 0},
+            {id:'b26',name:'Soda 300ml',price:0,comboSubproductPrice: 0},
+            {id:'b27',name:'Hatsu Amarillo',price:0,comboSubproductPrice: 3500},
+            {id:'b28',name:'Hatsu Azul',price:0,comboSubproductPrice: 3500},
+            {id:'b29',name:'Hatsu Blanco',price:0,comboSubproductPrice: 3500},
+            {id:'b30',name:'Hatsu Morado',price:0,comboSubproductPrice: 3500},
+            {id:'b31',name:'Hatsu Negro',price:0,comboSubproductPrice: 3500},
+            {id:'b32',name:'Hatsu Rojo',price:0,comboSubproductPrice: 3500},
+            {id:'b33',name:'Hatsu Rosado',price:0,comboSubproductPrice: 3500},
+            {id:'b34',name:'Hatsu Verde',price:0,comboSubproductPrice: 3500},
+            {id:'b35',name:'Club Colombia Dorada',price:0,comboSubproductPrice: 5000},
+            {id:'b36',name:'Club Colombia Negra',price:0,comboSubproductPrice: 5000},
+            {id:'b37',name:'Club Colombia Roja',price:0,comboSubproductPrice: 5000},
+            {id:'b38',name:'Corona',price:0,comboSubproductPrice: 5000},
+            {id:'b39',name:'Cusqueña',price:0,comboSubproductPrice: 5000},
+            {id:'b40',name:'Stella Artois',price:0,comboSubproductPrice: 5000},
+          ]
+        },
+        {
+          name: 'Entradas',
+          products: [
+            {id:'bo15',name:'Camarones Dragon',price:0, comboSubproductPrice:0},
+            {id:'bo16',name:'Coctel de Camaron',price:0, comboSubproductPrice:0},
+            {id:'bo17',name:'Croquetas de Cangrejo',price:0, comboSubproductPrice:0},
+            {id:'bo18',name:'Coco Ebi',price:0, comboSubproductPrice:0},
+            {id:'bo19',name:'Coco Roll',price:0, comboSubproductPrice:0},
+            {id:'bo20',name:'Kani Especial',price:0, comboSubproductPrice:0},
+            {id:'bo21',name:'Sensación',price:0, comboSubproductPrice:0},
+            {id:'bo22',name:'Ceviche Limeño',price:0, comboSubproductPrice:0},
+          ]
+        },
+        {
+          name: 'Rolls Completos',
+          products: [
+            {id:'rec-x12-13',name:'Akira X12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-14',name:'Emperador x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-15',name:'Explotion x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-16',name:'Gori Gori x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-17',name:'Itako x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-18',name:'Master x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-19',name:'Meraki x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-20',name:'Roll Acevichado x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-21',name:'Samurai x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-22',name:'SM tempurizado x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-23',name:'Tropical x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-23',name:'Volcan x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-15',name:'Aburi x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-16',name:'California x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-17',name:'Cholo x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-18',name:'Citrus x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-19',name:'Cuzco x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-20',name:'Fujishowa x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-21',name:'Ojo de Tigre x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-22',name:'Premium x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-23',name:'Roll del Cheff x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-24',name:'Sake  x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-25',name:'Salmon Skin x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-26',name:'Tofu x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-27',name:'Veggie x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-28',name:'Ebi x12',price:0, comboSubproductPrice: 0}
+          ]
+        }
+      ]
+    },
+    {
+      id:'combo6',
+      name:'Combo Sushi Market',
+      price:300000,
+      subcategory: true,
+      size: 'Completo',
+      subcategories: [
+        {
+          name: 'Bebidas',
+          products: [
+            {id:'b22',name:'Agua con Gas',price:0,comboSubproductPrice: 0},
+            {id:'b23',name:'Agua sin Gas',price:0,comboSubproductPrice: 0},
+            {id:'b24',name:'Coca Cola Original',price:0,comboSubproductPrice: 0},
+            {id:'b25',name:'Coca Cola Zero',price:0,comboSubproductPrice: 0},
+            {id:'b26',name:'Soda 300ml',price:0,comboSubproductPrice: 0},
+            {id:'b27',name:'Hatsu Amarillo',price:0,comboSubproductPrice: 3500},
+            {id:'b28',name:'Hatsu Azul',price:0,comboSubproductPrice: 3500},
+            {id:'b29',name:'Hatsu Blanco',price:0,comboSubproductPrice: 3500},
+            {id:'b30',name:'Hatsu Morado',price:0,comboSubproductPrice: 3500},
+            {id:'b31',name:'Hatsu Negro',price:0,comboSubproductPrice: 3500},
+            {id:'b32',name:'Hatsu Rojo',price:0,comboSubproductPrice: 3500},
+            {id:'b33',name:'Hatsu Rosado',price:0,comboSubproductPrice: 3500},
+            {id:'b34',name:'Hatsu Verde',price:0,comboSubproductPrice: 3500},
+            {id:'b35',name:'Club Colombia Dorada',price:0,comboSubproductPrice: 5000},
+            {id:'b36',name:'Club Colombia Negra',price:0,comboSubproductPrice: 5000},
+            {id:'b37',name:'Club Colombia Roja',price:0,comboSubproductPrice: 5000},
+            {id:'b38',name:'Corona',price:0,comboSubproductPrice: 5000},
+            {id:'b39',name:'Cusqueña',price:0,comboSubproductPrice: 5000},
+            {id:'b40',name:'Stella Artois',price:0,comboSubproductPrice: 5000},
+          ]
+        },
+        {
+          name: 'Entradas',
+          products: [
+            {id:'bo15',name:'Camarones Dragon',price:0, comboSubproductPrice:0},
+            {id:'bo16',name:'Coctel de Camaron',price:0, comboSubproductPrice:0},
+            {id:'bo17',name:'Croquetas de Cangrejo',price:0, comboSubproductPrice:0},
+            {id:'bo18',name:'Coco Ebi',price:0, comboSubproductPrice:0},
+            {id:'bo19',name:'Coco Roll',price:0, comboSubproductPrice:0},
+            {id:'bo20',name:'Kani Especial',price:0, comboSubproductPrice:0},
+            {id:'bo21',name:'Sensación',price:0, comboSubproductPrice:0},
+            {id:'bo22',name:'Ceviche Limeño',price:0, comboSubproductPrice:0},
+          ]
+        },
+        {
+          name: 'Rolls Completos',
+          products: [
+            {id:'rec-x12-13',name:'Akira X12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-14',name:'Emperador x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-15',name:'Explotion x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-16',name:'Gori Gori x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-17',name:'Itako x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-18',name:'Master x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-19',name:'Meraki x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-20',name:'Roll Acevichado x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-21',name:'Samurai x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-22',name:'SM tempurizado x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-23',name:'Tropical x12',price:0, comboSubproductPrice: 0},
+            {id:'rec-x12-23',name:'Volcan x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-15',name:'Aburi x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-16',name:'California x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-17',name:'Cholo x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-18',name:'Citrus x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-19',name:'Cuzco x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-20',name:'Fujishowa x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-21',name:'Ojo de Tigre x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-22',name:'Premium x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-23',name:'Roll del Cheff x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-24',name:'Sake  x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-25',name:'Salmon Skin x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-26',name:'Tofu x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-27',name:'Veggie x12',price:0, comboSubproductPrice: 0},
+            {id:'res-x12-28',name:'Ebi x12',price:0, comboSubproductPrice: 0}
+          ]
+        }
+      ]
+    },{
+      id:'combo7',
+      name:'Combo Infantil',
+      price:28500,
+      subcategory: true,
+      size: 'Completo',
+      subcategories: [
+        {
+          name: 'Infantil con Pollo',
+          products: [
+            {id:'ip01',name:'Combo Infantil Pollo con Papas',price:0,comboSubproductPrice: 0},
+            {id:'ip02',name:'Combo Infantil Pollo con Platanitos',price:0,comboSubproductPrice: 0}
+          ]
+        },
+        {
+          name: 'Infantil con Tilapia',
+          products: [
+            {id:'it01',name:'Combo Infantil Pollo con Papas',price:0, comboSubproductPrice:0},
+            {id:'it02',name:'Combo Infantil Pollo con Platanitos',price:0, comboSubproductPrice:0}
           ]
         }
       ]
@@ -633,7 +1169,8 @@ const state = {
   tip: { value: 0, type: 'fixed' },
   currentSubcategory: null,
   currentCombo: null,
-  currentComboCategory: null
+  currentComboCategory: null,
+  comboSelections: {} // Para almacenar las selecciones de combos
 };
 const STORAGE_KEY = 'pos_history_v2';
 
@@ -654,6 +1191,11 @@ const hdrPos = document.getElementById('hdrPos');
 const btnReset = document.getElementById('btnReset');
 const historyView = document.getElementById('historyView');
 const historyList = document.getElementById('historyList');
+
+// Elementos de navegación
+const navUserInfo = document.getElementById('navUserInfo');
+const navUserName = document.getElementById('navUserName');
+const navLogout = document.getElementById('navLogout');
 
 // Nuevos elementos para descuentos y propinas
 const discountValueEl = document.getElementById('discountValue');
@@ -904,6 +1446,9 @@ function openHistoryFromStart(){
   renderHistory();
 }
 
+// Configurar listeners de navegación
+navLogout.addEventListener('click', resetToStart);
+
 document.getElementById("btnOpenHistory2").addEventListener("click", openHistoryFromStart);
 document.getElementById("open-history").addEventListener("click", openHistoryFromStart);
 document.getElementById("btnApplyFilters").addEventListener("click", ()=>{
@@ -978,6 +1523,11 @@ function onInitialSubmit(e){
   
   state.user = {phone,name,city,address,pos};
   
+  // Actualizar navegación
+  navUserInfo.style.display = 'flex';
+  navUserName.textContent = name;
+  navLogout.style.display = 'block';
+  
   hdrName.textContent = name;
   hdrPhone.textContent = `Teléfono: ${phone}`;
   hdrCity.textContent = `Ciudad: ${city}`;
@@ -998,6 +1548,12 @@ function resetToStart(){
   state.currentSubcategory = null;
   state.currentCombo = null;
   state.currentComboCategory = null;
+  state.comboSelections = {};
+  
+  // Actualizar navegación
+  navUserInfo.style.display = 'none';
+  navLogout.style.display = 'none';
+  
   renderCart();
   initialCard.style.display = 'block';
   app.style.display = 'none';
@@ -1048,7 +1604,7 @@ function renderProducts(){
         <button class="back-btn" onclick="goBackToComboCategories()">←</button>
         <div>
           <h3 id="categoryTitle">${combo.name} - ${category.name}</h3>
-          <div class="small">Selecciona un producto (precio incluido en el combo)</div>
+          <div class="small">Selecciona un producto (precio se suma al combo)</div>
         </div>
       </div>
     `;
@@ -1058,7 +1614,7 @@ function renderProducts(){
       el.className='prod-btn'; 
       el.innerHTML=`
         <div class="name">${p.name}</div>
-        <div class="price">Incluido</div>
+        <div class="price">+${money(p.comboSubproductPrice || 0)}</div>
       `; 
       el.onclick = ()=> addComboProduct(combo, p); 
       productsEl.appendChild(el); 
@@ -1183,31 +1739,65 @@ function goBackToComboCategories() {
 }
 
 /* ===========================
-        CARRITO
+        CARRITO - MODIFICADO PARA COMBOS
    =========================== */
 
 function addComboProduct(combo, product) {
-  // Primero agregar el combo principal con su precio
-  const existingCombo = state.cart.find(i=>i.id===combo.id);
-  if (!existingCombo) {
-    state.cart.push({
+  // Verificar si ya existe el combo en el carrito
+  let existingComboIndex = state.cart.findIndex(item => item.id === combo.id && item.isCombo);
+  
+  if (existingComboIndex === -1) {
+    // Si no existe el combo, crearlo
+    const comboItem = {
       id: combo.id,
       name: combo.name,
-      price: combo.price,
-      qty: 1
-    });
+      price: combo.price, // Precio base del combo
+      qty: 1,
+      isCombo: true,
+      subproducts: [],
+      totalPrice: combo.price // Inicialmente solo el precio base
+    };
+    state.cart.push(comboItem);
+    existingComboIndex = state.cart.length - 1;
   }
   
-  // Luego agregar el producto del combo con precio 0
-  state.cart.push({
-    id: product.id,
-    name: `${product.name} (${combo.name})`,
-    price: 0,
-    qty: 1
-  });
+  // Agregar o actualizar el subproducto en el combo
+  const comboItem = state.cart[existingComboIndex];
+  const existingSubproductIndex = comboItem.subproducts.findIndex(sp => sp.id === product.id);
+  
+  if (existingSubproductIndex === -1) {
+    // Agregar nuevo subproducto
+    comboItem.subproducts.push({
+      id: product.id,
+      name: product.name,
+      price: product.comboSubproductPrice || 0,
+      qty: 1
+    });
+  } else {
+    // Incrementar cantidad del subproducto existente
+    comboItem.subproducts[existingSubproductIndex].qty++;
+  }
+  
+  // Actualizar el precio total del combo
+  updateComboTotalPrice(comboItem);
   
   renderCart();
   goBackToComboCategories();
+}
+
+function updateComboTotalPrice(comboItem) {
+  if (!comboItem.subproducts) {
+    comboItem.totalPrice = comboItem.price;
+    return;
+  }
+  
+  // Calcular la suma de todos los subproductos
+  const subproductsTotal = comboItem.subproducts.reduce((total, subproduct) => {
+    return total + (subproduct.price * subproduct.qty);
+  }, 0);
+  
+  // El precio total es: precio base del combo + suma de subproductos
+  comboItem.totalPrice = comboItem.price + subproductsTotal;
 }
 
 function addToCart(id){ 
@@ -1219,7 +1809,7 @@ function addToCart(id){
     return;
   } 
   
-  const existing = state.cart.find(i=>i.id===id); 
+  const existing = state.cart.find(i=>i.id===id && !i.isCombo); 
   if(existing) {
     existing.qty++; 
   } else {
@@ -1227,7 +1817,8 @@ function addToCart(id){
       id: p.id,
       name: p.name,
       price: p.price,
-      qty: 1
+      qty: 1,
+      isCombo: false
     }); 
   }
   
@@ -1235,9 +1826,20 @@ function addToCart(id){
 }
 
 function changeQty(i,delta){ 
-  if(!state.cart[i]) return; 
-  state.cart[i].qty += delta; 
-  if(state.cart[i].qty <=0) state.cart.splice(i,1); 
+  if(!state.cart[i]) return;
+  
+  if (state.cart[i].isCombo) {
+    // Para combos, ajustar la cantidad
+    state.cart[i].qty += delta;
+    if(state.cart[i].qty <= 0) {
+      state.cart.splice(i,1);
+    }
+  } else {
+    // Para productos normales
+    state.cart[i].qty += delta;
+    if(state.cart[i].qty <= 0) state.cart.splice(i,1);
+  }
+  
   renderCart(); 
 }
 
@@ -1247,7 +1849,11 @@ function removeItem(i){
 }
 
 function calcTotals(){ 
-  const subtotal = state.cart.reduce((s,i)=>s + i.price*i.qty,0);
+  const subtotal = state.cart.reduce((s, item) => {
+    // Para combos usar totalPrice, para productos normales usar price
+    const price = item.totalPrice !== undefined ? item.totalPrice : item.price;
+    return s + (price * item.qty);
+  }, 0);
   
   let discountAmount = 0;
   if (state.discount.value > 0) {
@@ -1288,26 +1894,66 @@ function renderCart(){
   if (state.cart.length === 0) {
     cartList.innerHTML = '<div class="small" style="text-align:center;padding:20px;color:var(--muted)">El carrito está vacío</div>';
   } else {
-    state.cart.forEach((it, idx)=>{ 
+    state.cart.forEach((item, idx)=>{ 
       const div = document.createElement('div'); 
       div.className='cart-item'; 
-      div.innerHTML = `
-        <div style="display:flex;align-items:center">
-          <div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(180deg,var(--accent-2),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">
-            ${it.name[0]}
+      
+      if (item.isCombo) {
+        // Mostrar combo con sus subproductos
+        const comboPricePerUnit = item.totalPrice || item.price;
+        const comboTotal = comboPricePerUnit * item.qty;
+        
+        div.innerHTML = `
+          <div style="display:flex;align-items:center;width:100%">
+            <div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(180deg,var(--accent-2),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">
+              C
+            </div>
+            <div class="meta" style="margin-left:12px;flex:1">
+              <div style="font-weight:700">${item.name} <span class="combo-badge">COMBO</span></div>
+              <div class="small" style="margin-top:4px;color:var(--accent)">
+                Precio base: ${money(item.price)} + subproductos: ${money(comboPricePerUnit - item.price)}
+              </div>
+              ${item.subproducts && item.subproducts.length > 0 ? `
+                <div class="small" style="margin-top:4px">
+                  <strong>Incluye:</strong>
+                  ${item.subproducts.map(sp => 
+                    `<div class="subproduct-item"><span class="subproduct-name">${sp.name} x ${sp.qty}</span> <span style="color:var(--accent-2)">${money(sp.price)} c/u</span></div>`
+                  ).join('')}
+                </div>
+              ` : ''}
+              <div class="small" style="margin-top:4px;color:var(--accent-2);font-weight:600">
+                ${money(comboPricePerUnit)} x ${item.qty} = <strong>${money(comboTotal)}</strong>
+              </div>
+            </div>
           </div>
-          <div class="meta" style="margin-left:12px">
-            <div style="font-weight:700">${it.name}</div>
-            <div class="small">${money(it.price)} x ${it.qty} = <strong style="color:var(--accent-2)">${money(it.price*it.qty)}</strong></div>
+          <div class="qty-controls">
+            <button class="btn ghost" onclick="changeQty(${idx}, -1)">-</button>
+            <div class="small" style="align-self:center">${item.qty}</div>
+            <button class="btn" onclick="changeQty(${idx}, 1)">+</button>
+            <button class="btn ghost" style="background:var(--accent-2);color:#fff;border:none;margin-left:8px" onclick="removeItem(${idx})">Eliminar</button>
           </div>
-        </div>
-        <div class="qty-controls">
-          <button class="btn ghost" onclick="changeQty(${idx}, -1)">-</button>
-          <div class="small" style="align-self:center">${it.qty}</div>
-          <button class="btn" onclick="changeQty(${idx}, 1)">+</button>
-          <button class="btn ghost" style="background:var(--accent-2);color:#fff;border:none;margin-left:8px" onclick="removeItem(${idx})">Eliminar</button>
-        </div>
-      `; 
+        `;
+      } else {
+        // Mostrar producto normal
+        div.innerHTML = `
+          <div style="display:flex;align-items:center">
+            <div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(180deg,var(--accent-2),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">
+              ${item.name[0]}
+            </div>
+            <div class="meta" style="margin-left:12px">
+              <div style="font-weight:700">${item.name}</div>
+              <div class="small">${money(item.price)} x ${item.qty} = <strong style="color:var(--accent-2)">${money(item.price*item.qty)}</strong></div>
+            </div>
+          </div>
+          <div class="qty-controls">
+            <button class="btn ghost" onclick="changeQty(${idx}, -1)">-</button>
+            <div class="small" style="align-self:center">${item.qty}</div>
+            <button class="btn" onclick="changeQty(${idx}, 1)">+</button>
+            <button class="btn ghost" style="background:var(--accent-2);color:#fff;border:none;margin-left:8px" onclick="removeItem(${idx})">Eliminar</button>
+          </div>
+        `;
+      }
+      
       cartList.appendChild(div); 
     }); 
   }
@@ -1371,12 +2017,36 @@ function applyTip() {
 function showModalForFinalize(){
   if(state.cart.length===0){ alert('Carrito vacío'); return; }
   modalItems.innerHTML = '';
-  state.cart.forEach(it=>{
-    const r = document.createElement('div');
-    r.style.display='flex'; r.style.justifyContent='space-between'; r.style.padding='6px 0';
-    r.innerHTML = `<div style="color:var(--accent)">${it.name} x ${it.qty}</div><div style="color:var(--accent-2)">${money(it.price*it.qty)}</div>`;
-    modalItems.appendChild(r);
+  
+  state.cart.forEach(item=>{
+    if (item.isCombo) {
+      // Mostrar combo con detalles
+      const comboPricePerUnit = item.totalPrice || item.price;
+      const comboTotal = comboPricePerUnit * item.qty;
+      
+      const r = document.createElement('div');
+      r.style.marginBottom='10px';
+      r.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="color:var(--accent);font-weight:700">${item.name} (COMBO) x ${item.qty}</div>
+          <div style="color:var(--accent-2);font-weight:700">${money(comboTotal)}</div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-left:10px;margin-top:4px">
+          ${item.subproducts && item.subproducts.length > 0 ? 
+            `Incluye: ${item.subproducts.map(sp => `${sp.name} x ${sp.qty}`).join(', ')}` : 
+            'Sin subproductos seleccionados'}
+        </div>
+      `;
+      modalItems.appendChild(r);
+    } else {
+      // Mostrar producto normal
+      const r = document.createElement('div');
+      r.style.display='flex'; r.style.justifyContent='space-between'; r.style.padding='6px 0';
+      r.innerHTML = `<div style="color:var(--accent)">${item.name} x ${item.qty}</div><div style="color:var(--accent-2)">${money(item.price*item.qty)}</div>`;
+      modalItems.appendChild(r);
+    }
   });
+  
   const t = calcTotals();
   modalSubtotalEl.textContent = money(t.subtotal);
   modalDiscountEl.textContent = money(t.discount);
@@ -1401,7 +2071,30 @@ async function finalizeAndInvoice(){
   state.tip = { value: tipValue, type: tipType };
   const payMethod = modalPayMethodEl.value;
   const t = calcTotals();
-  const orderItems = JSON.parse(JSON.stringify(state.cart));
+  
+  // Preparar los items para el historial
+  const orderItems = state.cart.map(item => {
+    // Para combos, incluir toda la información
+    if (item.isCombo) {
+      return {
+        id: item.id,
+        name: item.name,
+        price: item.totalPrice || item.price,
+        qty: item.qty,
+        isCombo: true,
+        subproducts: item.subproducts || []
+      };
+    } else {
+      return {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        qty: item.qty,
+        isCombo: false
+      };
+    }
+  });
+  
   const order = {
     id: 'PED-' + Date.now(),
     createdAt: new Date().toISOString(),
@@ -1414,18 +2107,22 @@ async function finalizeAndInvoice(){
     total: t.total,
     payMethod
   };
+  
   state.history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   state.history.push(order);
   saveHistory();
 
   await generateInvoicePDF(order);
 
+  // Limpiar estado
   state.cart = [];
   state.discount = { value: 0, type: 'fixed' };
   state.tip = { value: 0, type: 'fixed' };
   state.currentSubcategory = null;
   state.currentCombo = null;
   state.currentComboCategory = null;
+  state.comboSelections = {};
+  
   renderCart();
   hideDetailModalReset();
   initialCard.style.display = 'block';
@@ -1444,7 +2141,7 @@ async function finalizeAndInvoice(){
 }
 
 /* ==========================================
-      PDF FACTURA
+      PDF FACTURA - MODIFICADO PARA COMBOS
    ==========================================
 */
 
@@ -1453,7 +2150,7 @@ async function generateInvoicePDF(order){
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({unit:'pt',format:'A4'});
     const left = 40; let y = 40;
-    doc.setFontSize(18); doc.setTextColor(45,30,55); doc.text('Factura - POS Demo', left, y);
+    doc.setFontSize(18); doc.setTextColor(45,30,55); doc.text('Factura - Sushi Market', left, y);
     y += 24;
     doc.setFontSize(11); doc.setTextColor(80,80,80);
     doc.text(`Pedido: ${order.id}`, left, y); y += 16;
@@ -1468,12 +2165,33 @@ async function generateInvoicePDF(order){
 
     order.items.forEach(it=>{
       doc.setFontSize(11);
-      const maxWidth = 260;
-      const lines = doc.splitTextToSize(it.name, maxWidth);
-      doc.text(lines, left, y);
-      doc.text(String(it.qty), 320, y);
-      doc.text(money(it.price * it.qty), 420, y);
-      y += (16 * lines.length);
+      
+      if (it.isCombo && it.subproducts && it.subproducts.length > 0) {
+        // Mostrar combo con subproductos
+        const lines = doc.splitTextToSize(`${it.name} (COMBO)`, 260);
+        doc.text(lines, left, y);
+        doc.text(String(it.qty), 320, y);
+        doc.text(money(it.price * it.qty), 420, y);
+        y += (16 * lines.length);
+        
+        // Mostrar subproductos
+        it.subproducts.forEach(sp => {
+          doc.setFontSize(9);
+          doc.setTextColor(100,100,100);
+          doc.text(`  - ${sp.name} x ${sp.qty}`, left + 20, y);
+          y += 14;
+        });
+        doc.setFontSize(11);
+        doc.setTextColor(0,0,0);
+      } else {
+        // Mostrar producto normal
+        const lines = doc.splitTextToSize(it.name, 260);
+        doc.text(lines, left, y);
+        doc.text(String(it.qty), 320, y);
+        doc.text(money(it.price * it.qty), 420, y);
+        y += (16 * lines.length);
+      }
+      
       if(y > 700){ doc.addPage(); y = 40; }
     });
 
@@ -1483,11 +2201,11 @@ async function generateInvoicePDF(order){
     doc.text(`Impuesto (8%): ${money(order.tax)}`, 380, y); y += 16;
     
     const tipText = order.tip?.type === 'percent' 
-      ? `Propina (${order.tip.value}%): ${money(order.tip.value * order.subtotal / 100)}`
+      ? `Propina (${order.tip.value}%): ${money(order.tip.value * (order.subtotal - order.discount) / 100)}`
       : `Propina: ${money(order.tip?.value || 0)}`;
     doc.text(tipText, 380, y); y += 16;
     
-    doc.setFontSize(14); doc.setTextColor(237,34,47); doc.text(`TOTAL: ${money(order.total)}`, 380, y);
+    doc.setFontSize(14); doc.setTextColor(255,29,47); doc.text(`TOTAL: ${money(order.total)}`, 380, y);
 
     doc.save(`${order.id}_factura.pdf`);
   }catch(err){ console.error('Error generando PDF', err); alert('Error al generar PDF. Revisa consola.'); }
